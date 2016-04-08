@@ -1,16 +1,29 @@
 package entity;
 
-public class EntityManager {
+import java.util.ArrayList;
 
-	public EntityManager() {
-		// TODO Auto-generated constructor stub
+public class EntityManager 
+{
+	private ArrayList<Entity> entityList;
+	
+	public EntityManager()
+	{
+		entityList = new ArrayList<Entity>();
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public Entity getEntity(int index)
+	{
+		if(index < entityList.size())
+		{
+			return entityList.get(index);
+		}
+		return null;
+	}
+
+	
+	
+	public static void main(String[] args)
+	{
 
 	}
 
