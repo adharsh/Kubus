@@ -1,9 +1,9 @@
 package entity;
 
-public class Person {
+public class Person extends Entity{
 
 	public Person() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**
