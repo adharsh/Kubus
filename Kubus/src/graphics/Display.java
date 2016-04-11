@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -10,33 +11,55 @@ import javax.swing.JFrame;
 
 public class Display extends Canvas
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4053475848532572725L;
+	/**
+	 * 
+	 */
 	
 	private JFrame frame;
-	private Bitmap frameBuffer;
-	private BufferedImage displayBuffer;
-	private BufferStrategy bufferStrategy;
-	private byte[] bufferData;
+	private Renderer frameBuffer;
+	private BufferedImage displayImage;
+	private byte[] displayComponents;
+	private BufferStrategy strat;
+	private Graphics g;
 	
 	public Display(int w, int h, String title)
 	{
-		this.setPreferredSize(new Dimension(w, h));
+		setPreferredSize(new Dimension(w, h));
+
+		frameBuffer = new Renderer(w, h);
+		displayImage = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+		
+		displayComponents = ((DataBufferByte)displayImage.getRaster().getDataBuffer()).getData();
+		
+		
 		frame = new JFrame(title);
 		frame.add(this);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		
-		frameBuffer = new Bitmap(w, h);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		
 		createBufferStrategy(1);
-		bufferData = ((DataBufferByte)displayBuffer.getRaster().getDataBuffer()).getData();
-		bufferStrategy = this.getBufferStrategy();
-		
+		strat = getBufferStrategy();
+		g = strat.getDrawGraphics();
+	}
+	
+	public void setVisible(boolean v)
+	{
+		frame.setVisible(v);
+	}
+	
+	public Renderer getFrameBuffer()
+	{
+		return frameBuffer;
 	}
 	
 	public void swap()
 	{
-		frameBuffer.pixels(bufferData);
-		
-		bufferStrategy.show();
+		frameBuffer.getByteArrayBGR(displayComponents);
+		g.drawImage(displayImage, 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight(), null);
+		strat.show();
 	}
 }
