@@ -14,15 +14,17 @@ public class Tile extends Entity
 	private int tileHeight;
 	private int tileXIndex;
 	private int tileYIndex;
+	private int face;
 	
 	
-	public Tile(int xIndex, int yIndex, int height, Terrain terrain, Kube cube)
+	public Tile(int xIndex, int yIndex, int height, Terrain terrain, Kube cube, int face)
 	{
 		this.terrain = terrain;
 		cubeMap = cube;
 		tileXIndex = xIndex;
 		tileYIndex = yIndex;
 		tileHeight = height;
+		this.face = face;
 	}
 	
 	
