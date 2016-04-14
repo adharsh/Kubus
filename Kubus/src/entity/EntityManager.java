@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class EntityManager 
 {
 	private Handle handle;
-	private Person player;
+	private Player player;
 	private ArrayList<Entity> entityList;
 	
 	public EntityManager()

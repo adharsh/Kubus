@@ -1,7 +1,5 @@
 package graphics;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mesh
@@ -13,8 +11,10 @@ public class Mesh
 	public int getIndex(int i) { return indices.get(i); }
 	public int getNumIndices() { return indices.size(); }
 
-	public Mesh(List<Vertex> vertices, List<Integer> indices) throws IOException
+	public Mesh(List<Vertex> vertices, List<Integer> indices)
 	{
+		this.vertices = vertices;
+		this.indices = indices;
 	}
 	
 	public void draw(Renderer render, Matrix4f transform, Bitmap texture)

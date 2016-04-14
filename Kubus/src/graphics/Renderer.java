@@ -66,10 +66,10 @@ public class Renderer extends Bitmap
 		Vertex midY = v2.transform(screenSpaceTransform).perspectiveDivide();
 		Vertex maxY = v3.transform(screenSpaceTransform).perspectiveDivide();
 
-		if(minY.triangleArea(midY, maxY) <= 0)
-		{
-			return;
-		}
+//		if(minY.triangleArea(midY, maxY) <= 0)
+//		{
+//			return;
+//		}
 
 		if(maxY.getY() < midY.getY())
 		{

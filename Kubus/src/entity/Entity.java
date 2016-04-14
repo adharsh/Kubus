@@ -1,5 +1,7 @@
 package entity;
 
+import graphics.Renderer;
+
 public class Entity {
 	
 	private float x;
@@ -16,7 +18,7 @@ public class Entity {
 		
 	}
 	
-	public void render() 
+	public void render(Renderer r) 
 	{
 		
 	}

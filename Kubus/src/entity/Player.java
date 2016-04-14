@@ -1,8 +1,12 @@
 package entity;
 
-public class Person extends Entity{
+public class Player extends Entity{
 
-	public Person() {
+	private double health;
+	
+	
+	
+	public Player() {
 		
 	}
 
