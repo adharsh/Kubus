@@ -1,21 +1,17 @@
 package entity;
 
-public class Player extends Entity{
+public class Player extends Entity
+{
 
 	private double health;
+	//face the player is on
+	private int currentFace;
 	
 	
-	
-	public Player() {
-		
+	public Player(int startFace) 
+	{
+		currentFace = startFace;
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

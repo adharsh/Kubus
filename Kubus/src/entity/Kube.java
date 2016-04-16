@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import graphics.Matrix4f;
@@ -29,6 +30,7 @@ public class Kube extends Entity
 	private int faceLength;
 	
 	private HashMap<Integer, Integer> faceMap;
+	private ArrayList<ArrayList<Tile>> tiles;
 	
 	public Kube(int faceLength, float tileLength)
 	{
@@ -41,6 +43,8 @@ public class Kube extends Entity
 		faceMap.put(BACK, BACK);
 		faceMap.put(LEFT, LEFT);
 		faceMap.put(RIGHT, RIGHT);
+		tiles = new ArrayList<ArrayList<Tile>>();
+		for(int a=0;a<6;a++) { tiles.add(new ArrayList<Tile>()); }
 	}
 	
 	
@@ -54,26 +58,34 @@ public class Kube extends Entity
 		return tileLength;
 	}
 	
-	private Matrix4f getRelativeRotation(int relativeFace)
+	
+	public Tile getTileAt(int face, int xIndex, int yIndex)
 	{
-		switch(relativeFace)
+		if(face >= tiles.size() || xIndex >= faceLength || yIndex >= faceLength)
+			return null;
+		ArrayList<Tile> arrayListFace = tiles.get(face);
+		for(Tile t : arrayListFace)
 		{
-		case TOP:
-			return new Matrix4f().initRotation(0, 1, 0);
-		case FRONT:
-			return new Matrix4f().initRotation(0, 0, 1);
-		case BOTTOM:
-			return new Matrix4f().initRotation(0, -1, 0);
-		case BACK:
-			return new Matrix4f().initRotation(0, 0, -1);
-		case LEFT:
-			return new Matrix4f().initRotation(-1, 0, 0);
-		case RIGHT:
-			return new Matrix4f().initRotation(1, 0, 0);
+			if(t.getXIndex() == xIndex && t.getYIndex() == yIndex)
+			{
+				return t;
+			}
 		}
 		return null;
 	}
 	
+	public boolean addTile(Tile tile)
+	{
+		int index = tile.getFace() - 1;
+		
+		if(index >= tiles.size() || (faceLength * faceLength) >= tiles.get(index).size())
+		{
+			return false;
+		}
+		tiles.get(index).add(tile);
+		
+		return true;
+	}
 	
 	public void rotateTopForward()
 	{
@@ -116,10 +128,19 @@ public class Kube extends Entity
 			int mappedValue = faceMap.get(a);
 			if(mappedValue != BACK && mappedValue != FRONT)
 			{
-				mappedValue;
-				if(mappedValue < FRONT)
+				switch(mappedValue)
 				{
-					mappedValue = BACK;
+				case TOP:
+					mappedValue = LEFT;
+					break;
+				case LEFT:
+					mappedValue = BOTTOM;
+					break;
+				case BOTTOM:
+					mappedValue = RIGHT;
+					break;
+				case RIGHT:
+					mappedValue = TOP;
 				}
 			}
 			faceMap.put(a, mappedValue);
@@ -128,11 +149,52 @@ public class Kube extends Entity
 	
 	public void rotateTopRight()
 	{
-		
+		for(int a = TOP; a < RIGHT; a++)
+		{
+			int mappedValue = faceMap.get(a);
+			if(mappedValue != BACK && mappedValue != FRONT)
+			{
+				switch(mappedValue)
+				{
+				case TOP:
+					mappedValue = RIGHT;
+					break;
+				case LEFT:
+					mappedValue = TOP;
+					break;
+				case BOTTOM:
+					mappedValue = LEFT;
+					break;
+				case RIGHT:
+					mappedValue = BOTTOM;
+				}
+			}
+			faceMap.put(a, mappedValue);
+		}
 	}
 	
 	public Matrix4f getFaceRotation(int face)
 	{
 		return getRelativeRotation(faceMap.get(face));
+	}
+	
+	private Matrix4f getRelativeRotation(int relativeFace)
+	{
+		switch(relativeFace)
+		{
+		case TOP:
+			return new Matrix4f().initRotation(0, 1, 0);
+		case FRONT:
+			return new Matrix4f().initRotation(0, 0, 1);
+		case BOTTOM:
+			return new Matrix4f().initRotation(0, -1, 0);
+		case BACK:
+			return new Matrix4f().initRotation(0, 0, -1);
+		case LEFT:
+			return new Matrix4f().initRotation(-1, 0, 0);
+		case RIGHT:
+			return new Matrix4f().initRotation(1, 0, 0);
+		}
+		return null;
 	}
 }

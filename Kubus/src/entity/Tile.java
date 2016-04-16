@@ -25,6 +25,8 @@ public class Tile extends Entity
 		tileYIndex = yIndex;
 		tileHeight = height;
 		this.face = face;
+		
+		cube.addTile(this);
 	}
 	
 	
@@ -85,5 +87,10 @@ public class Tile extends Entity
 	public Terrain getTerrain()
 	{
 		return terrain;
+	}
+	
+	public int getFace()
+	{
+		return face;
 	}
 }

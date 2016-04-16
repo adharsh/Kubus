@@ -1,12 +1,12 @@
 package entity;
 
 import graphics.Renderer;
+import graphics.Vector4f;
 
 public class Entity {
 	
-	private float x;
-	private float y;
-	private float z;
+	private Vector4f position;
+	private Vector4f velocity;
 	
 	public Entity() 
 	{
@@ -20,22 +20,26 @@ public class Entity {
 	
 	public void render(Renderer r) 
 	{
-		
+		//TODO
 	}
 	
-	public float getX()
-	{	
-		return x;
-	}
-	
-	public float getY()
+	public void setVelocity(Vector4f velocity)
 	{
-		return y;
-	}
-	
-	public float getZ()
-	{	
-		return z;	
+		this.velocity = velocity;
 	}
 
+	public void setPosition(Vector4f position)
+	{
+		this.position = position;
+	}
+	
+	public Vector4f getPosition()
+	{
+		return position;
+	}
+	
+	public Vector4f getVelocity()
+	{
+		return velocity;
+	}
 }
