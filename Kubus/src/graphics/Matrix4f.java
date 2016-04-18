@@ -120,9 +120,9 @@ public class Matrix4f
 		Vector4f f = forward.normalized();
 
 		Vector4f r = up.normalized();
-		r = r.cross(f);
+		r = r.cross(f).normalized();
 
-		Vector4f u = f.cross(r);
+		Vector4f u = f.cross(r).normalized();
 
 		return initRotation(f, u, r);
 	}

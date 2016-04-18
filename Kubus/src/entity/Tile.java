@@ -1,6 +1,14 @@
 package entity;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import graphics.Bitmap;
+import graphics.Matrix4f;
+import graphics.Mesh;
 import graphics.Renderer;
+import graphics.Vector4f;
+import graphics.Vertex;
 import terrain.Terrain;
 
 public class Tile extends Entity
@@ -16,6 +24,29 @@ public class Tile extends Entity
 	private int tileYIndex;
 	private int face;
 	
+	private static final Mesh squareMesh;
+	private static Bitmap solidColor;
+	
+	static
+	{
+		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(1, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(1, 0, 0, 0)));
+
+		indices.add(0);
+		indices.add(1);
+		indices.add(2);
+		indices.add(2);
+		indices.add(3);
+		indices.add(0);
+		
+		squareMesh = new Mesh(vertices, indices);
+		
+		solidColor = new Bitmap(1, 1); solidColor.setPixel(0, 0, 0xFFFFFFFF);
+	}
 	
 	public Tile(int xIndex, int yIndex, int height, Terrain terrain, Kube cube, int face)
 	{
@@ -26,15 +57,15 @@ public class Tile extends Entity
 		tileHeight = height;
 		this.face = face;
 		
-		cube.addTile(this);
+//		cube.addTile(this);
 	}
 	
 	
-	
 	@Override
-	public void render(Renderer r)
+	public void render(Renderer r, Matrix4f viewProjection)
 	{
-		
+		super.render(r, viewProjection);
+		squareMesh.draw(r, viewProjection, renderTransform.getTransformation(), solidColor);
 	}
 	
 	public boolean isPlayerOnTile(Player player)

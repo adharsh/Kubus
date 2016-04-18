@@ -17,13 +17,14 @@ public class Mesh
 		this.indices = indices;
 	}
 	
-	public void draw(Renderer render, Matrix4f transform, Bitmap texture)
+	public void draw(Renderer render, Matrix4f viewProjection, Matrix4f transform, Bitmap texture)
 	{
+		Matrix4f modelViewProjection = viewProjection.mul(transform);
 		for(int a=0;a<indices.size();a+=3)
 		{
-			render.drawTriangle(vertices.get(indices.get(a)).transform(transform), 
-					vertices.get(indices.get(a + 1)).transform(transform), 
-					vertices.get(indices.get(a + 2)).transform(transform), 
+			render.drawTriangle(vertices.get(indices.get(a)).transform(modelViewProjection), 
+					vertices.get(indices.get(a + 1)).transform(modelViewProjection), 
+					vertices.get(indices.get(a + 2)).transform(modelViewProjection), 
 					texture);
 		}
 	}

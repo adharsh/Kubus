@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import graphics.Matrix4f;
+import graphics.Vector4f;
 
 /*
  * assuming there is no rotation on the cube and you are viewing the cube's center from a position of (0, -1, -1)
@@ -183,7 +184,7 @@ public class Kube extends Entity
 		switch(relativeFace)
 		{
 		case TOP:
-			return new Matrix4f().initRotation(0, 1, 0);
+			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
 		case FRONT:
 			return new Matrix4f().initRotation(0, 0, 1);
 		case BOTTOM:
