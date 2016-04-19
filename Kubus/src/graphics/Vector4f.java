@@ -61,15 +61,6 @@ public class Vector4f
 						axis.mul(this.dot(axis.mul(1 - cosAngle))))); //Rotation on local Y
 	}
 
-	public Vector4f rotate(Quaternion rotation)
-	{
-		Quaternion conjugate = rotation.Conjugate();
-
-		Quaternion w = rotation.mul(this).mul(conjugate);
-
-		return new Vector4f(w.getX(), w.getY(), w.getZ(), 1.0f);
-	}
-
 	public Vector4f lerp(Vector4f dest, float lerpFactor)
 	{
 		return dest.sub(this).mul(lerpFactor).add(this);
