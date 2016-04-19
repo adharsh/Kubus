@@ -1,14 +1,15 @@
 package entity;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
 import graphics.Vector4f;
 import graphics.Vertex;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 import terrain.Terrain;
 
 public class Tile extends Entity
@@ -31,10 +32,10 @@ public class Tile extends Entity
 	{
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(1, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(1, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-1.f, 0, -1.f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-1.f, 0, 1.f, 1), new Vector4f(0, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(1.f, 0, 1.f, 1), new Vector4f(1, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(1.f, 0, -1.f, 1), new Vector4f(1, 0, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
@@ -45,7 +46,12 @@ public class Tile extends Entity
 		
 		squareMesh = new Mesh(vertices, indices);
 		
-		solidColor = new Bitmap(1, 1); solidColor.setPixel(0, 0, 0xFFFFFFFF);
+		try {
+			solidColor = new Bitmap("z:/whale.jpg");
+		} catch (IOException e) {
+			solidColor = new Bitmap(1, 1);
+			e.printStackTrace();
+		}
 	}
 	
 	public Tile(int xIndex, int yIndex, int height, Terrain terrain, Kube cube, int face)
@@ -55,9 +61,23 @@ public class Tile extends Entity
 		tileXIndex = xIndex;
 		tileYIndex = yIndex;
 		tileHeight = height;
+		
+		if(face < 1)
+		{
+			face = 1;
+		}
+		if(face > 6)
+		{
+			face = 6;
+		}
 		this.face = face;
 		
-//		cube.addTile(this);
+		cube.addTile(this);
+		renderTransform.setScale(cube.getTileLength(), 0, cube.getTileLength());
+		float faceLength = cube.getFaceLength();
+		faceLength /= 2.f;
+		renderTransform.setPosition(new Vector4f((faceLength - (float)xIndex) * cube.getTileLength(), 0,
+				(faceLength - (float)yIndex) * cube.getTileLength(), 1));
 	}
 	
 	

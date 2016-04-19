@@ -2,10 +2,10 @@ package graphics;
 
 public class Vector4f
 {
-	private final float x;
-	private final float y;
-	private final float z;
-	private final float w;
+	private float x;
+	private float y;
+	private float z;
+	private float w;
 
 	public Vector4f(float x, float y, float z, float w)
 	{
@@ -134,6 +134,14 @@ public class Vector4f
 	public float getW()
 	{
 		return w;
+	}
+	
+	public void setXYZW(float x, float y, float z, float w)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 	}
 
 	public boolean equals(Vector4f r)

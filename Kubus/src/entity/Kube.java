@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import graphics.Matrix4f;
+import graphics.Renderer;
 import graphics.Vector4f;
 
 /*
@@ -17,7 +18,7 @@ import graphics.Vector4f;
  * 	right = 6
  */
 
-public class Kube extends Entity
+public class Kube
 {
 	private static final int TOP = 1;
 	private static final int FRONT = 2;
@@ -79,7 +80,7 @@ public class Kube extends Entity
 	{
 		int index = tile.getFace() - 1;
 		
-		if(index >= tiles.size() || (faceLength * faceLength) >= tiles.get(index).size())
+		if(index >= tiles.size() || (faceLength * faceLength) <= tiles.get(index).size())
 		{
 			return false;
 		}
@@ -177,6 +178,21 @@ public class Kube extends Entity
 	public Matrix4f getFaceRotation(int face)
 	{
 		return getRelativeRotation(faceMap.get(face));
+	}
+	
+	public void renderFaces(Renderer render, Matrix4f viewProjection)
+	{
+		for(int a=0;a<6;a++)
+		{
+			int mappedFace = faceMap.get(a + 1);
+			if(mappedFace != BACK && mappedFace != BOTTOM && mappedFace != LEFT)
+			{
+				for(int b=0;b<tiles.get(a).size();b++)
+				{
+					tiles.get(a).get(b).render(render, viewProjection);
+				}
+			}
+		}
 	}
 	
 	private Matrix4f getRelativeRotation(int relativeFace)
