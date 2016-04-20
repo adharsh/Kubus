@@ -54,6 +54,7 @@ public class Tile extends Entity
 		}
 	}
 	
+	
 	public Tile(int xIndex, int yIndex, int height, Terrain terrain, Kube cube, int face)
 	{
 		this.terrain = terrain;

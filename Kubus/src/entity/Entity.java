@@ -28,6 +28,12 @@ public class Entity {
 		//TODO
 	}
 	
+
+	public Transformation getTransform()
+	{
+		return renderTransform;
+	}
+	
 	public void setVelocity(Vector4f velocity)
 	{
 		this.velocity = velocity;

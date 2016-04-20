@@ -85,7 +85,7 @@ public class Kube
 			return false;
 		}
 		tiles.get(index).add(tile);
-		
+		tile.getTransform().setRotation(getFaceRotation(tile.getFace()));
 		return true;
 	}
 	
@@ -200,17 +200,17 @@ public class Kube
 		switch(relativeFace)
 		{
 		case TOP:
-			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
+			return new Matrix4f().initRotation((float)Math.toRadians(90), 0, 0);
 		case FRONT:
-			return new Matrix4f().initRotation(0, 0, 1);
+			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
 		case BOTTOM:
-			return new Matrix4f().initRotation(0, -1, 0);
+			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
 		case BACK:
-			return new Matrix4f().initRotation(0, 0, -1);
+			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
 		case LEFT:
-			return new Matrix4f().initRotation(-1, 0, 0);
+			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
 		case RIGHT:
-			return new Matrix4f().initRotation(1, 0, 0);
+			return new Matrix4f().initRotation(new Vector4f(0, 0, 1, 1), new Vector4f(0, 1, 0, 1));
 		}
 		return null;
 	}

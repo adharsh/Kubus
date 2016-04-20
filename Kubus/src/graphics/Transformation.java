@@ -38,6 +38,11 @@ public class Transformation
 		scale.setXYZW(x, y, z, 1);
 	}
 	
+	public void setRotation(Matrix4f rotation)
+	{
+		this.rotation = rotation;
+	}
+	
 	public Matrix4f getTransformation()
 	{
 		Matrix4f translation = new Matrix4f().initTranslation(position.getX(), position.getY(), position.getZ());
