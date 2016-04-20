@@ -35,11 +35,11 @@ public class Display extends Canvas
 		
 		frame = new JFrame(title);
 		frame.add(this);
+		frame.setResizable(false);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
 		
 		createBufferStrategy(1);
 		strat = getBufferStrategy();
