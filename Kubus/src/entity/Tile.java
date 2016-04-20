@@ -32,10 +32,10 @@ public class Tile extends Entity
 	{
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
-		vertices.add(new Vertex(new Vector4f(-1.f, 0, -1.f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-1.f, 0, 1.f, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(1.f, 0, 1.f, 1), new Vector4f(1, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(1.f, 0, -1.f, 1), new Vector4f(1, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, .5f, 1), new Vector4f(0, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(1, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(1, 0, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
@@ -73,11 +73,11 @@ public class Tile extends Entity
 		this.face = face;
 		
 		cube.addTile(this);
-		renderTransform.setScale(cube.getTileLength(), 0, cube.getTileLength());
+		renderTransform.setScale(cube.getTileLength(), 1, cube.getTileLength());
 		float faceLength = cube.getFaceLength();
 		faceLength /= 2.f;
-		renderTransform.setPosition(new Vector4f((faceLength - (float)xIndex) * cube.getTileLength(), 0,
-				(faceLength - (float)yIndex) * cube.getTileLength(), 1));
+		renderTransform.setPosition(new Vector4f(((float)xIndex - faceLength) * cube.getTileLength(), 0,
+				((float)yIndex - faceLength) * cube.getTileLength(), 1));
 	}
 	
 	

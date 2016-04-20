@@ -29,16 +29,18 @@ public class KubusMain
 		Display w = new Display(600, 600, "wee");
 		w.setVisible(true);
 		Renderer f = w.getFrameBuffer();
-		Kube kube = new Kube(2, 2);
+		Kube kube = new Kube(2, 1f);
 		Tile t = new Tile(0, 0, 0, null, kube, 0);
-		Tile t2 = new Tile(1, 0, 0, null, kube, 0);
-		Camera c = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(90.0f),
+		Tile t2 = new Tile(0, 1, 0, null, kube, 0);
+		Tile t3 = new Tile(1, 0, 0, null, kube, 0);
+		Tile t4 = new Tile(1, 1, 0, null, kube, 0);
+		Camera c = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.0f),
 			   	(float)f.getWidth()/(float)f.getHeight(), 0.1f, 1000.0f));
 		c.setPosition(new Vector4f(2, 2, 2, 1));
 		c.lookAt(new Vector4f(0, 0, 0, 1));
 		while(true)
 		{
-			c.setPosition(c.getPosition().add(new Vector4f(0, 0.1f, 0, 0)));
+	//		c.setPosition(c.getPosition().add(new Vector4f(0.01f, 0.01f, 0, 0)));
 		//	c.lookAt(new Vector4f(0, 0, 0, 1));
 			f.fill((byte)0);
 			f.clearDepthBuffer();

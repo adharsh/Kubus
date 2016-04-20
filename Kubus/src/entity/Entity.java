@@ -25,7 +25,6 @@ public class Entity {
 
 	public void render(Renderer r, Matrix4f viewProjection)
 	{
-		renderTransform.setPosition(position);
 		//TODO
 	}
 	
