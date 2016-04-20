@@ -39,7 +39,7 @@ public class Display extends Canvas
 		frame.setLocationRelativeTo(null);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		frame.setResizable(false);
 		
 		createBufferStrategy(1);
 		strat = getBufferStrategy();

@@ -47,7 +47,7 @@ public class Tile extends Entity
 		squareMesh = new Mesh(vertices, indices);
 		
 		try {
-			solidColor = new Bitmap("z:/whale.jpg");
+			solidColor = new Bitmap("Z:/Java Projects/StarLord/StarLord0.jpg");
 		} catch (IOException e) {
 			solidColor = new Bitmap(1, 1);
 			e.printStackTrace();
