@@ -75,10 +75,35 @@ public class Tile extends Entity
 		
 		cube.addTile(this);
 		renderTransform.setScale(cube.getTileLength(), 1, cube.getTileLength());
+		//assuming center is at 0, 0, 0
+		
+		
+		
 		float faceLength = cube.getFaceLength();
 		faceLength /= 2.f;
-		renderTransform.setPosition(new Vector4f(((float)xIndex - faceLength) * cube.getTileLength(), 0,
-				((float)yIndex - faceLength) * cube.getTileLength(), 1));
+
+		float outValue = faceLength * cube.getTileLength() - (cube.getTileLength() / 2);
+
+		if(face == Kube.TOP)
+		{
+			renderTransform.setPosition(new Vector4f(((float)xIndex - faceLength) * cube.getTileLength(), outValue,
+					((float)yIndex - faceLength) * cube.getTileLength(), 1));
+		}
+		else if(face == Kube.BOTTOM)
+		{
+			renderTransform.setPosition(new Vector4f(((float)xIndex - faceLength) * cube.getTileLength(), outValue,
+					((float)yIndex - faceLength) * cube.getTileLength(), 1));
+		}
+		else if(face == Kube.FRONT)
+		{
+			renderTransform.setPosition(new Vector4f(((float)xIndex - faceLength) * cube.getTileLength(),
+					(((float)yIndex - faceLength)) * cube.getTileLength(), outValue, 1));
+		}
+		else if(face == Kube.RIGHT)
+		{
+			renderTransform.setPosition(new Vector4f(outValue, ((float)xIndex - faceLength) * cube.getTileLength(),
+					((float)yIndex - faceLength) * cube.getTileLength(), 1));
+		}
 	}
 	
 	
