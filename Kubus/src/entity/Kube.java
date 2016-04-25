@@ -31,20 +31,20 @@ public class Kube
 	//try 10x10 faces
 	private int faceLength;
 	
-	private HashMap<Integer, Integer> faceMap;
+//	private HashMap<Integer, Integer> faceMap;
 	private ArrayList<ArrayList<Tile>> tiles;
 	
 	public Kube(int faceLength, float tileLength)
 	{
 		this.faceLength = faceLength;
 		this.tileLength = tileLength;
-		faceMap = new HashMap<Integer, Integer>();
-		faceMap.put(TOP, TOP);
-		faceMap.put(FRONT, FRONT);
-		faceMap.put(BOTTOM, BOTTOM);
-		faceMap.put(BACK, BACK);
-		faceMap.put(LEFT, LEFT);
-		faceMap.put(RIGHT, RIGHT);
+//		faceMap = new HashMap<Integer, Integer>();
+//		faceMap.put(TOP, TOP);
+//		faceMap.put(FRONT, FRONT);
+//		faceMap.put(BOTTOM, BOTTOM);
+//		faceMap.put(BACK, BACK);
+//		faceMap.put(LEFT, LEFT);
+//		faceMap.put(RIGHT, RIGHT);
 		tiles = new ArrayList<ArrayList<Tile>>();
 		for(int a=0;a<6;a++) { tiles.add(new ArrayList<Tile>()); }
 	}
@@ -89,109 +89,110 @@ public class Kube
 		return true;
 	}
 	
-	public void rotateTopForward()
-	{
-		for(int a = TOP; a < RIGHT; a++)
-		{
-			int mappedValue = faceMap.get(a);
-			if(mappedValue != LEFT && mappedValue != RIGHT)
-			{
-				mappedValue++;
-				if(mappedValue > BACK)
-				{
-					mappedValue = TOP;
-				}
-			}
-			faceMap.put(a, mappedValue);
-		}
-	}
-	
-	public void rotateTopBackward()
-	{
-		for(int a = TOP; a < RIGHT; a++)
-		{
-			int mappedValue = faceMap.get(a);
-			if(mappedValue != LEFT && mappedValue != RIGHT)
-			{
-				mappedValue--;
-				if(mappedValue < FRONT)
-				{
-					mappedValue = BACK;
-				}
-			}
-			faceMap.put(a, mappedValue);
-		}
-	}
-	
-	public void rotateTopLeft()
-	{
-		for(int a = TOP; a < RIGHT; a++)
-		{
-			int mappedValue = faceMap.get(a);
-			if(mappedValue != BACK && mappedValue != FRONT)
-			{
-				switch(mappedValue)
-				{
-				case TOP:
-					mappedValue = LEFT;
-					break;
-				case LEFT:
-					mappedValue = BOTTOM;
-					break;
-				case BOTTOM:
-					mappedValue = RIGHT;
-					break;
-				case RIGHT:
-					mappedValue = TOP;
-				}
-			}
-			faceMap.put(a, mappedValue);
-		}
-	}
-	
-	public void rotateTopRight()
-	{
-		for(int a = TOP; a < RIGHT; a++)
-		{
-			int mappedValue = faceMap.get(a);
-			if(mappedValue != BACK && mappedValue != FRONT)
-			{
-				switch(mappedValue)
-				{
-				case TOP:
-					mappedValue = RIGHT;
-					break;
-				case LEFT:
-					mappedValue = TOP;
-					break;
-				case BOTTOM:
-					mappedValue = LEFT;
-					break;
-				case RIGHT:
-					mappedValue = BOTTOM;
-				}
-			}
-			faceMap.put(a, mappedValue);
-		}
-	}
+//	public void rotateTopForward()
+//	{
+//		for(int a = TOP; a < RIGHT; a++)
+//		{
+//			int mappedValue = faceMap.get(a);
+//			if(mappedValue != LEFT && mappedValue != RIGHT)
+//			{
+//				mappedValue++;
+//				if(mappedValue > BACK)
+//				{
+//					mappedValue = TOP;
+//				}
+//			}
+//			faceMap.put(a, mappedValue);
+//		}
+//	}
+//	
+//	public void rotateTopBackward()
+//	{
+//		for(int a = TOP; a < RIGHT; a++)
+//		{
+//			int mappedValue = faceMap.get(a);
+//			if(mappedValue != LEFT && mappedValue != RIGHT)
+//			{
+//				mappedValue--;
+//				if(mappedValue < FRONT)
+//				{
+//					mappedValue = BACK;
+//				}
+//			}
+//			faceMap.put(a, mappedValue);
+//		}
+//	}
+//	
+//	public void rotateTopLeft()
+//	{
+//		for(int a = TOP; a < RIGHT; a++)
+//		{
+//			int mappedValue = faceMap.get(a);
+//			if(mappedValue != BACK && mappedValue != FRONT)
+//			{
+//				switch(mappedValue)
+//				{
+//				case TOP:
+//					mappedValue = LEFT;
+//					break;
+//				case LEFT:
+//					mappedValue = BOTTOM;
+//					break;
+//				case BOTTOM:
+//					mappedValue = RIGHT;
+//					break;
+//				case RIGHT:
+//					mappedValue = TOP;
+//				}
+//			}
+//			faceMap.put(a, mappedValue);
+//		}
+//	}
+//	
+//	public void rotateTopRight()
+//	{
+//		for(int a = TOP; a < RIGHT; a++)
+//		{
+//			int mappedValue = faceMap.get(a);
+//			if(mappedValue != BACK && mappedValue != FRONT)
+//			{
+//				switch(mappedValue)
+//				{
+//				case TOP:
+//					mappedValue = RIGHT;
+//					break;
+//				case LEFT:
+//					mappedValue = TOP;
+//					break;
+//				case BOTTOM:
+//					mappedValue = LEFT;
+//					break;
+//				case RIGHT:
+//					mappedValue = BOTTOM;
+//				}
+//			}
+//			faceMap.put(a, mappedValue);
+//		}
+//	}
 	
 	public Matrix4f getFaceRotation(int face)
 	{
-		return getRelativeRotation(faceMap.get(face));
+//		return getRelativeRotation(faceMap.get(face));
+		return getRelativeRotation(face);
 	}
 	
 	public void renderFaces(Renderer render, Matrix4f viewProjection)
 	{
 		for(int a=0;a<6;a++)
 		{
-			int mappedFace = faceMap.get(a + 1);
+//			int mappedFace = faceMap.get(a + 1);
 //			if(mappedFace != BACK && mappedFace != BOTTOM && mappedFace != LEFT)
+//			{
+			for(int b=0;b<tiles.get(a).size();b++)
 			{
-				for(int b=0;b<tiles.get(a).size();b++)
-				{
-					tiles.get(a).get(b).render(render, viewProjection);
-				}
+				tiles.get(a).get(b).render(render, viewProjection);
 			}
+//			}
 		}
 	}
 	

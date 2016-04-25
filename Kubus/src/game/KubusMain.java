@@ -15,7 +15,7 @@ public class KubusMain
 	private EntityManager manager;
 	private Camera c;
 
-	Kube kube = new Kube(2, 1f);
+	Kube kube = new Kube(5, .2f);
 	public KubusMain()
 	{
 		manager = new EntityManager();
@@ -34,9 +34,9 @@ public class KubusMain
 		
 		for(int a=1;a<=6;a++)
 		{
-			for(int x=0;x<2;x++)
+			for(int x=0;x<5;x++)
 			{
-				for(int y=0;y<2;y++)
+				for(int y=0;y<5;y++)
 				{
 					new Tile(x, y, 0, null, kube, a);
 				}
@@ -53,7 +53,7 @@ public class KubusMain
 		c.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
 		while(true)
 		{
-			interpAmt = c.spinAroundPoint(new Vector4f(1, 0, 0, 1), new Vector4f(1, 0, 0, 1), .01f, interpAmt, p / 2);
+			interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), .01111f, interpAmt, p / 2);
 			f.fill((byte)0);
 			f.clearDepthBuffer();
 			kube.renderFaces(f, c.getViewProjection());
