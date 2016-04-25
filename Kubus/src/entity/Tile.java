@@ -47,7 +47,7 @@ public class Tile extends Entity
 		squareMesh = new Mesh(vertices, indices);
 		
 		try {
-			solidColor = new Bitmap("Z:/whale.jpg");
+			solidColor = new Bitmap("D:/jpeg/kitten.jpg");
 		} catch (IOException e) {
 			solidColor = new Bitmap(1, 1);
 			e.printStackTrace();
@@ -92,8 +92,12 @@ public class Tile extends Entity
 		}
 		else if(face == Kube.BOTTOM)
 		{
-			renderTransform.setPosition(new Vector4f(xValue, outValue,
-					yValue, 1));
+			renderTransform.setPosition(new Vector4f(xValue, -outValue,
+					-yValue, 1));
+		}
+		else if(face == Kube.BACK)
+		{
+			renderTransform.setPosition(new Vector4f(xValue, yValue, -outValue, 1));
 		}
 		else if(face == Kube.FRONT)
 		{
@@ -102,7 +106,12 @@ public class Tile extends Entity
 		}
 		else if(face == Kube.RIGHT)
 		{
-			renderTransform.setPosition(new Vector4f(outValue, xValue,
+			renderTransform.setPosition(new Vector4f(outValue, -xValue,
+					yValue, 1));
+		}
+		else if(face == Kube.LEFT)
+		{
+			renderTransform.setPosition(new Vector4f(-outValue, xValue,
 					yValue, 1));
 		}
 	}

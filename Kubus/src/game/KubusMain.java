@@ -13,7 +13,9 @@ import graphics.Vector4f;
 public class KubusMain
 {
 	private EntityManager manager;
-	
+	private Camera c;
+
+	Kube kube = new Kube(2, 1f);
 	public KubusMain()
 	{
 		manager = new EntityManager();
@@ -26,30 +28,32 @@ public class KubusMain
 	
 	public void mainLoop()
 	{
-		Display w = new Display(600, 600, "wee");
+		Display w = new Display(900, 900, "wee");
 		w.setVisible(true);
 		Renderer f = w.getFrameBuffer();
-		Kube kube = new Kube(2, 1f);
-		Tile t = new Tile(0, 0, 0, null, kube, Kube.TOP);
-		Tile t2 = new Tile(0, 1, 0, null, kube, Kube.TOP);
-		Tile t3 = new Tile(1, 0, 0, null, kube, Kube.TOP);
-		Tile t4 = new Tile(1, 1, 0, null, kube, Kube.TOP);
-		Tile t5 = new Tile(0, 0, 0, null, kube, Kube.RIGHT);
-		Tile t6 = new Tile(0, 1, 0, null, kube, Kube.RIGHT);
-		Tile t7 = new Tile(1, 0, 0, null, kube, Kube.RIGHT);
-		Tile t8 = new Tile(1, 1, 0, null, kube, Kube.RIGHT);
-		Tile t9 = new Tile(0, 0, 0, null, kube, Kube.FRONT);
-		Tile t10 = new Tile(0, 1, 0, null, kube, Kube.FRONT);
-		Tile t11 = new Tile(1, 0, 0, null, kube, Kube.FRONT);
-		Tile t12 = new Tile(1, 1, 0, null, kube, Kube.FRONT);
-		Camera c = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.0f),
+		
+		for(int a=1;a<=6;a++)
+		{
+			for(int x=0;x<2;x++)
+			{
+				for(int y=0;y<2;y++)
+				{
+					new Tile(x, y, 0, null, kube, a);
+				}
+			}
+		}
+		
+		
+		c = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.0f),
 			   	(float)f.getWidth()/(float)f.getHeight(), 0.1f, 1000.0f));
 		c.setPosition(new Vector4f(2, 2, 2, 1));
-		c.lookAt(new Vector4f(0, 0, 0, 1));
+		
+		float p = (float) (Math.PI);
+		float interpAmt = 0;
+		c.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
 		while(true)
 		{
-			c.setPosition(c.getPosition().add(new Vector4f(-0.01f, 0.001f, 0, 0)));
-			c.lookAt(new Vector4f(0, 0, 0, 1));
+			interpAmt = c.spinAroundPoint(new Vector4f(1, 0, 0, 1), new Vector4f(1, 0, 0, 1), .01f, interpAmt, p / 2);
 			f.fill((byte)0);
 			f.clearDepthBuffer();
 			kube.renderFaces(f, c.getViewProjection());

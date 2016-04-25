@@ -51,6 +51,16 @@ public class Vector4f
 		return new Vector4f(x / length, y / length, z / length, w / length);
 	}
 
+	public void getRotationFromMat(Matrix4f mat)
+	{
+		Vector4f f = new Vector4f(mat.get(2, 0), mat.get(2, 1), mat.get(2, 2), 0);
+		Vector4f u = new Vector4f(mat.get(1, 0), mat.get(1, 1), mat.get(1, 2), 0);
+		Vector4f r = new Vector4f(mat.get(0, 0), mat.get(0, 1), mat.get(0, 2), 0);
+		
+		y = (float) Math.atan2(f.x, f.y);
+		x = (float) Math.atan2(f.z, Math.sqrt(f.x * f.x + f.y * f.y));
+	}
+	
 	public Vector4f rotate(Vector4f axis, float angle)
 	{
 		float sinAngle = (float)Math.sin(-angle);

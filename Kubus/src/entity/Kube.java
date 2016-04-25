@@ -185,7 +185,7 @@ public class Kube
 		for(int a=0;a<6;a++)
 		{
 			int mappedFace = faceMap.get(a + 1);
-			if(mappedFace != BACK && mappedFace != BOTTOM && mappedFace != LEFT)
+//			if(mappedFace != BACK && mappedFace != BOTTOM && mappedFace != LEFT)
 			{
 				for(int b=0;b<tiles.get(a).size();b++)
 				{
@@ -204,13 +204,13 @@ public class Kube
 		case FRONT:
 			return new Matrix4f().initRotation((float)Math.toRadians(90), 0, 0);
 		case BOTTOM:
-			return new Matrix4f().initRotation(0, 0, 0);
+			return new Matrix4f().initRotation((float)Math.toRadians(180), 0, 0);
 		case BACK:
-			return new Matrix4f().initRotation(0, 0, 0);
+			return new Matrix4f().initRotation(-(float)Math.toRadians(90), 0, 0);
 		case LEFT:
-			return new Matrix4f().initRotation(0, 0, 0);
+			return new Matrix4f().initRotation(0, 0, (float)Math.toRadians(90));
 		case RIGHT:
-			return new Matrix4f().initRotation(0, -(float)Math.toRadians(90), -(float)Math.toRadians(90));
+			return new Matrix4f().initRotation(0, 0, -(float)Math.toRadians(90));
 		}
 		return null;
 	}
