@@ -2,6 +2,7 @@ package game;
 
 import entity.EntityManager;
 import entity.Kube;
+import entity.Player;
 import entity.Tile;
 import graphics.Camera;
 import graphics.Display;
@@ -50,13 +51,20 @@ public class KubusMain
 		
 		float p = (float) (Math.PI);
 		float interpAmt = 0;
+		float i2 = 0;
 		c.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
+		Player pl = new Player(0, 0, 0, kube);
 		while(true)
 		{
 			interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), .01111f, interpAmt, p / 2);
+			if(interpAmt == p / 2)
+			{
+				i2 = c.spinAroundPoint(new Vector4f(1, 0, 0, 1), new Vector4f(1, 0, 0, 1), .01111f, i2, p / 2);
+			}
 			f.fill((byte)0);
 			f.clearDepthBuffer();
-			kube.renderFaces(f, c.getViewProjection());
+		//	kube.renderFaces(f, c.getViewProjection());
+			pl.render(f, c.getViewProjection());
 			w.swap();
 		}
 		
