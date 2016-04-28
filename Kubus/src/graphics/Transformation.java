@@ -43,6 +43,11 @@ public class Transformation
 		this.rotation = rotation;
 	}
 	
+	public Matrix4f getRotation()
+	{
+		return rotation;
+	}
+	
 	public Matrix4f getTransformation()
 	{
 		Matrix4f translation = new Matrix4f().initTranslation(position.getX(), position.getY(), position.getZ());

@@ -44,7 +44,7 @@ public class Player extends Entity
 		entMesh = new Mesh(vertices, indices);
 		
 		try {
-			solidColor = new Bitmap("d:/jpeg/6eMtaHG.png");
+			solidColor = new Bitmap("res/whale.jpg");
 		} catch (IOException e) {
 			solidColor = new Bitmap(1, 1);
 			e.printStackTrace();
@@ -73,6 +73,20 @@ public class Player extends Entity
 	public void takeHealth(double amount)
 	{
 		health -= amount;
+		if(health < 0)
+		{
+			health = 0;
+		}
+	}
+	
+	public void resetHealth()
+	{
+		health = MAX_HEALTH;
+	}
+	
+	public double getHealth()
+	{
+		return health;
 	}
 	
 	public boolean isMovingToNextTile()
@@ -84,7 +98,7 @@ public class Player extends Entity
 	public boolean moveTick(float deltaTime)
 	{
 		float moveAmount;
-		if(interpAmt + (2 * deltaTime) > 1.f)
+		if(interpAmt + (4 * deltaTime) > 1.f)
 		{
 			moveAmount = 1.f - interpAmt;
 			interpAmt = 1.f;
@@ -92,7 +106,7 @@ public class Player extends Entity
 		}
 		else
 		{
-			moveAmount = (2 * deltaTime);
+			moveAmount = (4 * deltaTime);
 			interpAmt += moveAmount;
 		}
 		float xDist = moveVector.getX() * moveAmount;

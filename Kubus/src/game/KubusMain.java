@@ -18,7 +18,7 @@ public class KubusMain
 	private Camera c;
 	private KeyInput input;
 
-	private Kube kube = new Kube(5, .4f);
+	private Kube kube = new Kube(5, .2f);
 	
 	public KubusMain()
 	{
@@ -62,7 +62,7 @@ public class KubusMain
 		long lastTime = System.currentTimeMillis();
 		while(true)
 		{
-		//	interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), .01111f, interpAmt, p / 2);
+			interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), dt, interpAmt, p / 2);
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
 			lastTime = System.currentTimeMillis();
 			if(pl.isMovingToNextTile())
@@ -75,15 +75,15 @@ public class KubusMain
 				{
 					pl.move(1, 0);
 				}
-				if(input.isKeyDown(KeyInput.UP_ARROW))
+				else if(input.isKeyDown(KeyInput.UP_ARROW))
 				{
 					pl.move(-1, 0);
 				}
-				if(input.isKeyDown(KeyInput.LEFT_ARROW))
+				else if(input.isKeyDown(KeyInput.LEFT_ARROW))
 				{
 					pl.move(0, -1);
 				}
-				if(input.isKeyDown(KeyInput.RIGHT_ARROW))
+				else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
 				{
 					pl.move(0, 1);
 				}
@@ -94,10 +94,11 @@ public class KubusMain
 			kube.renderFaces(f, c.getViewProjection());
 			pl.render(f, c.getViewProjection());
 			w.swap();
-			try {
+			try
+			{
 				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+			} catch (InterruptedException e) 
+			{
 				e.printStackTrace();
 			}
 		}

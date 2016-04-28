@@ -1,13 +1,13 @@
 package entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
+import graphics.Transformation;
 import graphics.Vector4f;
 import graphics.Vertex;
+
+import java.util.ArrayList;
 
 /*
  * assuming there is no rotation on the cube and you are viewing the cube's center from a position of (0, -1, -1)
@@ -43,12 +43,17 @@ public class Kube
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 
-		vertices.add(new Vertex(new Vector4f(-0.3f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.3f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0, 0.45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.05f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.05f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
+		indices.add(2);
+		
+		indices.add(1);
+		indices.add(3);
 		indices.add(2);
 		
 		wallMesh = new Mesh(vertices, indices);
@@ -185,6 +190,13 @@ public class Kube
 			{
 				tiles.get(a).get(b).render(render, viewProjection);
 			}
+		}
+		Transformation tf = new Transformation();
+		
+		for(Tile[] wall : walls)
+		{
+			tf.setRotation(wall[0].getRotation());
+			wallMesh.draw(render, viewProjection, wall[0].renderTransform.getTransformation(), Tile.solidColor);
 		}
 	}
 	

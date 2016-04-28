@@ -26,7 +26,7 @@ public class Tile extends Entity
 	private int face;
 	
 	private static final Mesh squareMesh;
-	private static Bitmap solidColor;
+	public static Bitmap solidColor;
 	
 	static
 	{
