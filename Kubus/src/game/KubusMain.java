@@ -9,17 +9,21 @@ import graphics.Display;
 import graphics.Matrix4f;
 import graphics.Renderer;
 import graphics.Vector4f;
+import input.KeyInput;
 
 
 public class KubusMain
 {
 	private EntityManager manager;
 	private Camera c;
+	private KeyInput input;
 
-	Kube kube = new Kube(5, .2f);
+	private Kube kube = new Kube(5, .4f);
+	
 	public KubusMain()
 	{
 		manager = new EntityManager();
+		input = new KeyInput();
 	}
 	
 	public static void main(String[] args)
@@ -31,6 +35,7 @@ public class KubusMain
 	{
 		Display w = new Display(900, 900, "wee");
 		w.setVisible(true);
+		w.addKeyListener(input);
 		Renderer f = w.getFrameBuffer();
 		
 		for(int a=1;a<=6;a++)
@@ -47,25 +52,54 @@ public class KubusMain
 		
 		c = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.0f),
 			   	(float)f.getWidth()/(float)f.getHeight(), 0.1f, 1000.0f));
-		c.setPosition(new Vector4f(2, 2, 2, 1));
-		
+		c.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
+	
 		float p = (float) (Math.PI);
 		float interpAmt = 0;
-		float i2 = 0;
 		c.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
-		Player pl = new Player(0, 0, 0, kube);
+		Player pl = new Player(Kube.TOP, 0, 0, kube);
+		float dt = 0;
+		long lastTime = System.currentTimeMillis();
 		while(true)
 		{
-			interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), .01111f, interpAmt, p / 2);
-			if(interpAmt == p / 2)
+		//	interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), .01111f, interpAmt, p / 2);
+			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
+			lastTime = System.currentTimeMillis();
+			if(pl.isMovingToNextTile())
 			{
-				i2 = c.spinAroundPoint(new Vector4f(1, 0, 0, 1), new Vector4f(1, 0, 0, 1), .01111f, i2, p / 2);
+				pl.moveTick(dt);
 			}
+			else
+			{
+				if(input.isKeyDown(KeyInput.DOWN_ARROW))
+				{
+					pl.move(1, 0);
+				}
+				if(input.isKeyDown(KeyInput.UP_ARROW))
+				{
+					pl.move(-1, 0);
+				}
+				if(input.isKeyDown(KeyInput.LEFT_ARROW))
+				{
+					pl.move(0, -1);
+				}
+				if(input.isKeyDown(KeyInput.RIGHT_ARROW))
+				{
+					pl.move(0, 1);
+				}
+			}
+			
 			f.fill((byte)0);
 			f.clearDepthBuffer();
-		//	kube.renderFaces(f, c.getViewProjection());
+			kube.renderFaces(f, c.getViewProjection());
 			pl.render(f, c.getViewProjection());
 			w.swap();
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}

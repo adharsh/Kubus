@@ -77,43 +77,9 @@ public class Tile extends Entity
 		renderTransform.setScale(cube.getTileLength(), 1, cube.getTileLength());
 		//assuming center is at 0, 0, 0
 		
+		renderTransform.setPosition(cube.getTilePosition(face, xIndex, yIndex));
 		
-		
-		float faceLength = cube.getFaceLength() - 1;
 
-		float outValue = (float)cube.getFaceLength() / 2.f * cube.getTileLength();
-		faceLength /= 2.f;
-		float xValue = ((float)xIndex - faceLength) * cube.getTileLength();
-		float yValue = ((float)yIndex - faceLength) * cube.getTileLength();
-		if(face == Kube.TOP)
-		{
-			renderTransform.setPosition(new Vector4f(xValue, outValue,
-					yValue, 1));
-		}
-		else if(face == Kube.BOTTOM)
-		{
-			renderTransform.setPosition(new Vector4f(xValue, -outValue,
-					-yValue, 1));
-		}
-		else if(face == Kube.BACK)
-		{
-			renderTransform.setPosition(new Vector4f(xValue, yValue, -outValue, 1));
-		}
-		else if(face == Kube.FRONT)
-		{
-			renderTransform.setPosition(new Vector4f(xValue,
-					-yValue, outValue, 1));
-		}
-		else if(face == Kube.RIGHT)
-		{
-			renderTransform.setPosition(new Vector4f(outValue, -xValue,
-					yValue, 1));
-		}
-		else if(face == Kube.LEFT)
-		{
-			renderTransform.setPosition(new Vector4f(-outValue, xValue,
-					yValue, 1));
-		}
 	}
 	
 	
