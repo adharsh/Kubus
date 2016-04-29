@@ -65,6 +65,7 @@ public class Kube
 		this.tileLength = tileLength;
 		tiles = new ArrayList<ArrayList<Tile>>();
 		for(int a=0;a<6;a++) { tiles.add(new ArrayList<Tile>()); }
+		walls = new ArrayList<Tile[]>();
 	}
 	
 	public void addWall(Tile t1, Tile t2)
@@ -195,7 +196,7 @@ public class Kube
 		
 		for(Tile[] wall : walls)
 		{
-			tf.setRotation(wall[0].getRotation());
+			tf.setRotation(wall[0].renderTransform.getRotation());
 			wallMesh.draw(render, viewProjection, wall[0].renderTransform.getTransformation(), Tile.solidColor);
 		}
 	}

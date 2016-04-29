@@ -18,7 +18,7 @@ public class KubusMain
 	private Camera c;
 	private KeyInput input;
 
-	private Kube kube = new Kube(5, .2f);
+	private Kube kube = new Kube(5, .4f);
 	
 	public KubusMain()
 	{
