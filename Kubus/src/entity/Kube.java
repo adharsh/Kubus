@@ -1,5 +1,6 @@
 package entity;
 
+import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
@@ -7,6 +8,7 @@ import graphics.Transformation;
 import graphics.Vector4f;
 import graphics.Vertex;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /*
@@ -37,16 +39,21 @@ public class Kube
 	
 	private ArrayList<ArrayList<Tile>> tiles;
 	private ArrayList<Tile[]> walls;
-	
+	private static Bitmap grass;
 	static
 	{
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.05f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.05f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(0, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 1, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
@@ -56,7 +63,53 @@ public class Kube
 		indices.add(3);
 		indices.add(2);
 		
+		indices.add(0);
+		indices.add(2);
+		indices.add(4);
+		
+		indices.add(4);
+		indices.add(6);
+		indices.add(2);
+		
+		indices.add(4);
+		indices.add(5);
+		indices.add(6);
+		
+		indices.add(5);
+		indices.add(6);
+		indices.add(7);
+		
+		indices.add(4);
+		indices.add(0);
+		indices.add(1);
+		
+		indices.add(5);
+		indices.add(4);
+		indices.add(1);
+		
+		indices.add(5);
+		indices.add(7);
+		indices.add(3);
+		
+		indices.add(5);
+		indices.add(1);
+		indices.add(3);
+		
+		indices.add(6);
+		indices.add(7);
+		indices.add(2);
+		
+		indices.add(7);
+		indices.add(3);
+		indices.add(2);
+		
 		wallMesh = new Mesh(vertices, indices);
+		try {
+			grass = new Bitmap("res/gras.jpg");
+		} catch (IOException e) {
+			grass = new Bitmap(1, 1);
+			e.printStackTrace();
+		}
 	}
 	
 	public Kube(int faceLength, float tileLength)
@@ -116,6 +169,7 @@ public class Kube
 	{
 		if(face >= tiles.size() || xIndex >= faceLength || yIndex >= faceLength)
 			return null;
+		face--;
 		ArrayList<Tile> arrayListFace = tiles.get(face);
 		for(Tile t : arrayListFace)
 		{
@@ -193,11 +247,27 @@ public class Kube
 			}
 		}
 		Transformation tf = new Transformation();
+		Vector4f pos = new Vector4f(0, 0, 0, 1);
+		tf.setScale(tileLength, tileLength, tileLength);
 		
 		for(Tile[] wall : walls)
 		{
-			tf.setRotation(wall[0].renderTransform.getRotation());
-			wallMesh.draw(render, viewProjection, wall[0].renderTransform.getTransformation(), Tile.solidColor);
+			Vector4f pos1 = wall[0].renderTransform.getPosition(), pos2 = wall[1].renderTransform.getPosition();
+			
+			if(wall[0].getXIndex() == wall[1].getXIndex())
+			{
+				tf.setScale(tileLength, tileLength, 0);
+			}
+			else
+			{
+				tf.setScale(0, tileLength, tileLength);
+			}
+			
+			tf.setRotation(getRelativeRotation(wall[0].getFace()));
+			pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
+					(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+			tf.setPosition(pos);
+			wallMesh.draw(render, viewProjection, tf.getTransformation(), this.grass);
 		}
 	}
 	

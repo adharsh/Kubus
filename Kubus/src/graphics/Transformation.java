@@ -18,6 +18,11 @@ public class Transformation
 		this.position = position;
 	}
 	
+	public Vector4f getPosition()
+	{
+		return position;
+	}
+	
 	public void setRotation(Vector4f fwd, Vector4f up)
 	{
 		rotation.initRotation(fwd, up);

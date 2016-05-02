@@ -44,7 +44,7 @@ public class Player extends Entity
 		entMesh = new Mesh(vertices, indices);
 		
 		try {
-			solidColor = new Bitmap("d:/jpeg/weee.jpg");
+			solidColor = new Bitmap("res/whale.jpg");
 		} catch (IOException e) {
 			solidColor = new Bitmap(1, 1);
 			e.printStackTrace();
@@ -129,6 +129,10 @@ public class Player extends Entity
 		}
 		//one tile at a time
 		if(Math.abs(dx) > 1 || Math.abs(dy) > 1)
+		{
+			return false;
+		}
+		if(map.wallInDirection(currentFace, curX, curY, dx, dy))
 		{
 			return false;
 		}

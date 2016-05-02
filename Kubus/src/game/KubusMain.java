@@ -60,9 +60,10 @@ public class KubusMain
 		Player pl = new Player(Kube.TOP, 0, 0, kube);
 		float dt = 0;
 		long lastTime = System.currentTimeMillis();
+		kube.addWall(kube.getTileAt(1, 0, 0), kube.getTileAt(1, 1, 0));
 		while(true)
 		{
-			interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), dt, interpAmt, p / 2);
+			//interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), dt, interpAmt, p / 2);
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
 			lastTime = System.currentTimeMillis();
 			if(pl.isMovingToNextTile())
@@ -71,19 +72,19 @@ public class KubusMain
 			}
 			else
 			{
-				if(input.isKeyDown(KeyInput.DOWN_ARROW))
+				if(input.isKeyDown(KeyInput.LEFT_ARROW))
 				{
 					pl.move(1, 0);
 				}
-				else if(input.isKeyDown(KeyInput.UP_ARROW))
+				else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
 				{
 					pl.move(-1, 0);
 				}
-				else if(input.isKeyDown(KeyInput.LEFT_ARROW))
+				else if(input.isKeyDown(KeyInput.UP_ARROW))
 				{
 					pl.move(0, -1);
 				}
-				else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
+				else if(input.isKeyDown(KeyInput.DOWN_ARROW))
 				{
 					pl.move(0, 1);
 				}
