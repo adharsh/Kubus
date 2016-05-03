@@ -46,14 +46,14 @@ public class Kube
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 
 		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(.1f, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(.1f, 0, 0, 0)));
 		
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0.15f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, -0.5f, 1), new Vector4f(.1f, 0.15f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, 0.5f, 1), new Vector4f(0, 0.15f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, 0.5f, 1), new Vector4f(.1f, 0.15f, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
@@ -105,7 +105,7 @@ public class Kube
 		
 		wallMesh = new Mesh(vertices, indices);
 		try {
-			grass = new Bitmap("res/gras.jpg");
+			grass = new Bitmap("res/brik.jpg");
 		} catch (IOException e) {
 			grass = new Bitmap(1, 1);
 			e.printStackTrace();
