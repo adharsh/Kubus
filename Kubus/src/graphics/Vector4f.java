@@ -19,6 +19,11 @@ public class Vector4f
 	{
 		this(x, y, z, 1.0f);
 	}
+	
+	public float length3d()
+	{
+		return (float)Math.sqrt(x * x + y * y + z * z);
+	}
 
 	public float length()
 	{

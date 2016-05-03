@@ -164,6 +164,25 @@ public class Kube
 		return tileLength;
 	}
 	
+	public Tile getNearestTile(Tile t)
+	{
+		float max = Float.MAX_VALUE;
+		Tile nearestTile = null;
+		float dist;
+		for(ArrayList<Tile> face : tiles)
+		{
+			for(Tile nearest : face)
+			{
+				dist = t.getPosition().sub(nearest.getPosition()).length3d();
+				if(dist < max)
+				{
+					max = dist;
+					nearestTile = nearest;
+				}
+			}
+		}
+		return nearestTile;
+	}
 	
 	public Tile getTileAt(int face, int xIndex, int yIndex)
 	{
@@ -267,7 +286,7 @@ public class Kube
 			pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 					(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
 			tf.setPosition(pos);
-			wallMesh.draw(render, viewProjection, tf.getTransformation(), this.grass);
+			wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
 		}
 	}
 	

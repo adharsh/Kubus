@@ -170,4 +170,8 @@ public class Player extends Entity
 		return failed;
 	}
 
+	public void switchFace(int dx, int dy)
+	{
+		
+	}
 }
