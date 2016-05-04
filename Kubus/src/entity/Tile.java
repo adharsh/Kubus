@@ -77,7 +77,7 @@ public class Tile extends Entity
 		renderTransform.setScale(cube.getTileLength(), 1, cube.getTileLength());
 		//assuming center is at 0, 0, 0
 		
-		renderTransform.setPosition(cube.getTilePosition(face, xIndex, yIndex));
+		setPosition(cube.getTilePosition(face, xIndex, yIndex));
 		
 
 	}

@@ -46,14 +46,14 @@ public class Kube
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 
 		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(.1f, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(.1f, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0, 0, 0)));
 		
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0.15f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, -0.5f, 1), new Vector4f(.1f, 0.15f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, 0.5f, 1), new Vector4f(0, 0.15f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, 0.5f, 1), new Vector4f(.1f, 0.15f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0.25f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0.25f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.25f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.25f, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
@@ -164,16 +164,17 @@ public class Kube
 		return tileLength;
 	}
 	
-	public Tile getNearestTile(Tile t)
+	public Tile getNearestTile(int f, int x, int y)
 	{
 		float max = Float.MAX_VALUE;
 		Tile nearestTile = null;
 		float dist;
+		Vector4f edgePos = getTilePosition(f, x, y);
 		for(ArrayList<Tile> face : tiles)
 		{
 			for(Tile nearest : face)
 			{
-				dist = t.getPosition().sub(nearest.getPosition()).length3d();
+				dist = edgePos.sub(nearest.getPosition()).length3d();
 				if(dist < max)
 				{
 					max = dist;

@@ -141,25 +141,10 @@ public class Player extends Entity
 		curX += dx;
 		curY += dy;
 		
-		if(curX < 0)
+		if(curX < 0 || curY < 0 || curX >= map.getFaceLength() || curY >= map.getFaceLength())
 		{
-			curX = 0;
-			failed = true;
-		}
-		if(curY < 0)
-		{
-			curY = 0;
-			failed = true;
-		}
-		if(curX >= map.getFaceLength())
-		{
-			curX = map.getFaceLength() - 1;
-			failed = true;
-		}
-		if(curY >= map.getFaceLength())
-		{
-			curY = map.getFaceLength() - 1;
-			failed = true;
+			switchFace(dx, dy);
+			return false;
 		}
 		if(!failed)
 		{
@@ -172,6 +157,11 @@ public class Player extends Entity
 
 	public void switchFace(int dx, int dy)
 	{
-		
+		Tile t = map.getNearestTile(currentFace, curX + dx, curY + dy);
+		currentFace = t.getFace();
+		this.setPosition(t.getPosition());
+		curX = t.getXIndex();
+		curY = t.getYIndex();
+		renderTransform.setRotation(map.getFaceRotation(currentFace));
 	}
 }
