@@ -75,6 +75,7 @@ public class Camera
 			interp += angle;
 		}
 		Vector4f diffVec = position.sub(point);
+		diffVec.fixW();
 		fwd = fwd.rotate(axis, angle);
 		this.axis = this.axis.rotate(axis, angle);
 		rotation.initRotation(fwd, this.axis);

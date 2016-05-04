@@ -18,7 +18,7 @@ public class KubusMain
 	private Camera c;
 	private KeyInput input;
 
-	private Kube kube = new Kube(5, .4f);
+	private Kube kube = new Kube(5, .3f);
 	
 	public KubusMain()
 	{
@@ -63,7 +63,7 @@ public class KubusMain
 		kube.addWall(kube.getTileAt(1, 3, 4), kube.getTileAt(1, 4, 4));
 		while(true)
 		{
-		//	interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), dt, interpAmt, p / 2);
+			interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 0, 0), new Vector4f(0, 0, 1, 0), dt * 30000, interpAmt, p / 2 * 10000);
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
 			lastTime = System.currentTimeMillis();
 			if(pl.isMovingToNextTile())
