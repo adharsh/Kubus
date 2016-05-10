@@ -6,7 +6,7 @@ public class Vector4f
 	private float y;
 	private float z;
 	private float w;
-
+	
 	public Vector4f(float x, float y, float z, float w)
 	{
 		this.x = x;
@@ -20,16 +20,21 @@ public class Vector4f
 		this(x, y, z, 1.0f);
 	}
 	
-	public float length3d()
+	public Vector4f(Vector4f a)
 	{
-		return (float)Math.sqrt(x * x + y * y + z * z);
+		this(a.x, a.y, a.z, 1.0f);
 	}
-
+	
 	public float length()
 	{
 		return (float)Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
+	public float length3d()
+	{
+		return (float)Math.sqrt(x * x + y * y + z * z);
+	}
+	
 	public float max()
 	{
 		return Math.max(Math.max(x, y), Math.max(z, w));

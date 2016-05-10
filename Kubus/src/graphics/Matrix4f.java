@@ -192,4 +192,9 @@ public class Matrix4f
 	{
 		m[x][y] = value;
 	}
+	
+	public Vector4f getRow(int r)
+	{
+		return new Vector4f(m[r][0], m[r][1], m[r][2], 0);
+	}
 }

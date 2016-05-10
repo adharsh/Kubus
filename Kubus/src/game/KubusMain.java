@@ -8,6 +8,7 @@ import graphics.Camera;
 import graphics.Display;
 import graphics.Matrix4f;
 import graphics.Renderer;
+import graphics.RotationHandler;
 import graphics.Vector4f;
 import input.KeyInput;
 
@@ -17,6 +18,7 @@ public class KubusMain
 	private EntityManager manager;
 	private Camera c;
 	private KeyInput input;
+	private RotationHandler rotHandler;
 
 	private Kube kube = new Kube(5, .4f);
 	
@@ -55,7 +57,7 @@ public class KubusMain
 		c.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
 	
 		float p = (float) (Math.PI);
-		float interpAmt = 0;
+		rotHandler = new RotationHandler(c);
 		c.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
 		Player pl = new Player(Kube.TOP, 0, 0, kube);
 		float dt = 0;
@@ -63,8 +65,8 @@ public class KubusMain
 		kube.addWall(kube.getTileAt(1, 3, 4), kube.getTileAt(1, 4, 4));
 		while(true)
 		{
-		//	interpAmt = c.spinAroundPoint(new Vector4f(0, 0, 1, 1), new Vector4f(0, 0, 1, 1), dt, interpAmt, p / 2);
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
+			
 			lastTime = System.currentTimeMillis();
 			if(pl.isMovingToNextTile())
 			{
@@ -74,19 +76,19 @@ public class KubusMain
 			{
 				if(input.isKeyDown(KeyInput.LEFT_ARROW))
 				{
-					pl.move(1, 0);
+					pl.move(1, 0, rotHandler);
 				}
 				else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
 				{
-					pl.move(-1, 0);
+					pl.move(-1, 0, rotHandler);
 				}
 				else if(input.isKeyDown(KeyInput.UP_ARROW))
 				{
-					pl.move(0, -1);
+					pl.move(0, -1, rotHandler);
 				}
 				else if(input.isKeyDown(KeyInput.DOWN_ARROW))
 				{
-					pl.move(0, 1);
+					pl.move(0, 1, rotHandler);
 				}
 			}
 			

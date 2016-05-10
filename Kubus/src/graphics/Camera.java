@@ -43,6 +43,11 @@ public class Camera
 		rotation.initRotation(x, y, z);
 	}
 	
+	public Matrix4f getRotation()
+	{
+		return rotation;
+	}
+	
 	public void setRotation(Vector4f f, Vector4f a, float angle)
 	{
 		axis = a.normalized();
@@ -60,12 +65,12 @@ public class Camera
 	
 	public float spinAroundPoint(Vector4f point, Vector4f axis, float angle, float interp, float amt)
 	{
-		if(interp >= amt)
+		if(Math.abs(interp) >= Math.abs(amt))
 		{
 			interp = amt;
 			return amt;
 		}
-		if(interp + angle > amt)
+		if(Math.abs(interp + angle) > Math.abs(amt))
 		{
 			angle = amt - interp;
 			interp = amt;

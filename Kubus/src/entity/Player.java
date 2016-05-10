@@ -7,6 +7,7 @@ import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
+import graphics.RotationHandler;
 import graphics.Vector4f;
 import graphics.Vertex;
 
@@ -120,7 +121,7 @@ public class Player extends Entity
 	
 	//returns if successful move 
 	//move fails if it hits wall
-	public boolean move(int dx, int dy)
+	public boolean move(int dx, int dy, RotationHandler r)
 	{
 		//one direction at a time
 		if(dx * dy != 0)
@@ -143,7 +144,7 @@ public class Player extends Entity
 		
 		if(curX < 0 || curY < 0 || curX >= map.getFaceLength() || curY >= map.getFaceLength())
 		{
-			switchFace(dx, dy);
+			switchFace(dx, dy, r);
 			return false;
 		}
 		if(!failed)
@@ -155,7 +156,7 @@ public class Player extends Entity
 		return failed;
 	}
 
-	public void switchFace(int dx, int dy)
+	public void switchFace(int dx, int dy, RotationHandler r)
 	{
 		Tile t = map.getNearestTile(currentFace, curX + dx, curY + dy);
 		currentFace = t.getFace();
