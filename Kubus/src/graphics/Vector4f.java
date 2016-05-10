@@ -15,6 +15,11 @@ public class Vector4f
 		this.w = w;
 	}
 
+	public void fixW()
+	{
+		w = 1;
+	}
+	
 	public Vector4f(float x, float y, float z)
 	{
 		this(x, y, z, 1.0f);
@@ -56,7 +61,7 @@ public class Vector4f
 
 	public Vector4f normalized()
 	{
-		float length = length();
+		float length = length3d();
 
 		return new Vector4f(x / length, y / length, z / length, w / length);
 	}

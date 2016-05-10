@@ -20,7 +20,7 @@ public class KubusMain
 	private KeyInput input;
 	private RotationHandler rotHandler;
 
-	private Kube kube = new Kube(5, .4f);
+	private Kube kube = new Kube(5, .3f);
 	
 	public KubusMain()
 	{

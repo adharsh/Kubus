@@ -36,7 +36,7 @@ public class Player extends Entity
 
 		vertices.add(new Vertex(new Vector4f(-0.3f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
 		vertices.add(new Vertex(new Vector4f(0.3f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0, 0.45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0, 4.45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
