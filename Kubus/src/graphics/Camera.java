@@ -86,6 +86,14 @@ public class Camera
 		rotation.initRotation(fwd, this.axis);
 		diffVec = diffVec.rotate(axis, angle);
 		position = point.add(diffVec);
+		if(interp == amt)//roundoff
+		{
+			position.setXYZW(Math.round(position.getX() * 10.f) / 10.f, Math.round(position.getY() * 10.f) / 10.f, Math.round(position.getZ() * 10.f) / 10.f, 0);
+			fwd = position.mul(-1).normalized();
+			fwd.fixW();
+			axis.setXYZW(fwd.getX(), -fwd.getY(), fwd.getZ(), 0);
+			rotation.initRotation(fwd, this.axis);
+		}
 		return interp;
 	}
 }

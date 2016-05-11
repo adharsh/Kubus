@@ -128,6 +128,11 @@ public class Kube
 		walls.add(newWall);
 	}
 	
+	public void addWall(Tile edge)
+	{
+		
+	}
+	
 	public boolean wallInDirection(int face, int x, int y, int dx, int dy)
 	{
 		Tile thisTile = getTileAt(face, x, y);
@@ -164,7 +169,7 @@ public class Kube
 		return tileLength;
 	}
 	
-	public Tile getNearestTile(Vector4f position)
+	public Tile getNearestTile(Vector4f position, int f)
 	{
 		Tile nearestTile = null;
 		float max = Float.MAX_VALUE;
@@ -180,6 +185,10 @@ public class Kube
 					nearestTile = nearest;
 				}
 			}
+		}
+		if(nearestTile.getFace() != f)
+		{
+			return null;
 		}
 		return nearestTile;
 	}

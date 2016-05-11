@@ -36,7 +36,7 @@ public class Player extends Entity
 
 		vertices.add(new Vertex(new Vector4f(-0.3f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
 		vertices.add(new Vertex(new Vector4f(0.3f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0, 4.45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+		vertices.add(new Vertex(new Vector4f(0, .45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
 
 		indices.add(0);
 		indices.add(1);
@@ -132,10 +132,13 @@ public class Player extends Entity
 		{
 			dxdy = new Vector4f(r.getLeftAxis());
 		}
-		
 		if(direction == RotationHandler.MOVE_UP)
 		{
-			dxdy = dxdy.mul(-1);
+			dxdy = dxdy.mul(-map.getTileLength());
+		}
+		else
+		{
+			dxdy = dxdy.mul(map.getTileLength());
 		}
 		return dxdy;
 	}
@@ -146,11 +149,32 @@ public class Player extends Entity
 	{
 		Vector4f dxdy = getDXDY(edge, direction, r);
 		
-		Tile thisTile = map.getNearestTile(getPosition());
-		Tile nextTile = map.getNearestTile(getPosition().add(dxdy));
+		Tile thisTile = map.getNearestTile(getPosition(), currentFace);
+		Tile nextTile = map.getNearestTile(getPosition().add(dxdy), currentFace);
 		
-		int dx = nextTile.getXIndex() - thisTile.getXIndex();
-		int dy = nextTile.getYIndex() - thisTile.getYIndex();
+		if(thisTile == null)
+		{
+			return false;
+		}
+		
+		int dx;
+		int dy;
+		if(nextTile != null)
+		{
+			dx = nextTile.getXIndex() - thisTile.getXIndex();
+			dy = nextTile.getYIndex() - thisTile.getYIndex();
+		}
+		else//solution: -dx, -dy of tile in opp dir
+		{
+			nextTile = map.getNearestTile(getPosition().sub(dxdy), currentFace);
+			if(nextTile == null)
+			{
+				return false;
+			}
+			dx = thisTile.getXIndex() - nextTile.getXIndex();
+			dy = thisTile.getYIndex() - nextTile.getYIndex();
+		}
+		
 		if(map.wallInDirection(currentFace, curX, curY, dx, dy))
 		{
 			return false;

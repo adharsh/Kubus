@@ -54,7 +54,7 @@ public class KubusMain
 		
 		c = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.0f),
 			   	(float)f.getWidth()/(float)f.getHeight(), 0.1f, 1000.0f));
-		c.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
+		c.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 0));
 	
 		float p = (float) (Math.PI);
 		rotHandler = new RotationHandler(c);
@@ -63,6 +63,7 @@ public class KubusMain
 		float dt = 0;
 		long lastTime = System.currentTimeMillis();
 		kube.addWall(kube.getTileAt(1, 3, 4), kube.getTileAt(1, 4, 4));
+		kube.addWall(kube.getTileAt(1, 4, 4), kube.getTileAt(1, 4, 3));
 		while(true)
 		{
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;

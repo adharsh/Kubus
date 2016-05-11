@@ -72,9 +72,14 @@ public class RotationHandler
 	public void rotate(float dt)
 	{
 		float rotAmt = (dt * netRot) / netTime;
+		float axisRot = rotAmt;
+		if(Math.abs(rotAmt + interpTheta) > Math.abs(netRot))
+		{
+			axisRot = netRot - interpTheta;
+		}
 		interpTheta = camera.spinAroundPoint(point, useAxis, rotAmt, interpTheta, netRot);
-		leftAxis = leftAxis.rotate(useAxis, rotAmt);
-		rightAxis = rightAxis.rotate(useAxis, rotAmt);
+		leftAxis = leftAxis.rotate(useAxis, axisRot);
+		rightAxis = rightAxis.rotate(useAxis, axisRot);
 		if(interpTheta == netRot)
 		{
 			leftAxis.round();
