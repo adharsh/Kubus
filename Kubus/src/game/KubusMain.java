@@ -68,30 +68,36 @@ public class KubusMain
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
 			
 			lastTime = System.currentTimeMillis();
-			if(pl.isMovingToNextTile())
+			if(rotHandler.isRunning())
 			{
-				pl.moveTick(dt);
+				rotHandler.rotate(dt);
 			}
 			else
 			{
-				if(input.isKeyDown(KeyInput.LEFT_ARROW))
+				if(pl.isMovingToNextTile())
 				{
-					pl.move(1, 0, rotHandler);
+					pl.moveTick(dt);
 				}
-				else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
+				else
 				{
-					pl.move(-1, 0, rotHandler);
-				}
-				else if(input.isKeyDown(KeyInput.UP_ARROW))
-				{
-					pl.move(0, -1, rotHandler);
-				}
-				else if(input.isKeyDown(KeyInput.DOWN_ARROW))
-				{
-					pl.move(0, 1, rotHandler);
+					if(input.isKeyDown(KeyInput.LEFT_ARROW))
+					{
+						pl.move(RotationHandler.LEFT_EDGE, RotationHandler.MOVE_DOWN, rotHandler);
+					}
+					else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
+					{
+						pl.move(RotationHandler.LEFT_EDGE, RotationHandler.MOVE_UP, rotHandler);
+					}
+					else if(input.isKeyDown(KeyInput.UP_ARROW))
+					{
+						pl.move(RotationHandler.RIGHT_EDGE, RotationHandler.MOVE_UP, rotHandler);
+					}
+					else if(input.isKeyDown(KeyInput.DOWN_ARROW))
+					{
+						pl.move(RotationHandler.RIGHT_EDGE, RotationHandler.MOVE_DOWN, rotHandler);
+					}
 				}
 			}
-			
 			f.fill((byte)0);
 			f.clearDepthBuffer();
 			kube.renderFaces(f, c.getViewProjection());

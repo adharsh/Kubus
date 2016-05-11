@@ -24,11 +24,21 @@ public class RotationHandler
 	
 		private Vector4f useAxis;
 	
+	public Vector4f getLeftAxis()
+	{
+		return leftAxis;
+	}
+	
+	public Vector4f getRightAxis()
+	{
+		return rightAxis;
+	}
+		
 	public RotationHandler(Camera camera) 
 	{
 		this.camera = camera;
 		leftAxis = new Vector4f(0, 0, 1, 0);
-		rightAxis = new Vector4f(-1, 0, 0, 0);
+		rightAxis = new Vector4f(1, 0, 0, 0);
 		useAxis = null;
 	}
 
@@ -53,6 +63,10 @@ public class RotationHandler
 		{
 			netRot = netRotRadians;
 		}
+		if(edge == RIGHT_EDGE)
+		{
+			netRot = -netRot;
+		}
 	}
 	
 	public void rotate(float dt)
@@ -63,6 +77,8 @@ public class RotationHandler
 		rightAxis = rightAxis.rotate(useAxis, rotAmt);
 		if(interpTheta == netRot)
 		{
+			leftAxis.round();
+			rightAxis.round();
 			isRunning = false;
 		}
 		

@@ -164,6 +164,26 @@ public class Kube
 		return tileLength;
 	}
 	
+	public Tile getNearestTile(Vector4f position)
+	{
+		Tile nearestTile = null;
+		float max = Float.MAX_VALUE;
+		float dist;
+		for(ArrayList<Tile> face : tiles)
+		{
+			for(Tile nearest : face)
+			{
+				dist = position.sub(nearest.getPosition()).length3d();
+				if(dist < max)
+				{
+					max = dist;
+					nearestTile = nearest;
+				}
+			}
+		}
+		return nearestTile;
+	}
+	
 	public Tile getNearestTile(int f, int x, int y)
 	{
 		float max = Float.MAX_VALUE;

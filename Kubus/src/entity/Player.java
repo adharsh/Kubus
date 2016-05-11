@@ -119,20 +119,38 @@ public class Player extends Entity
 		return !isMoving;
 	}
 	
+	//initial condition: x goes along x axis, y goes along z axis
+	
+	private Vector4f getDXDY(int edge, int direction, RotationHandler r)
+	{
+		Vector4f dxdy;
+		if(edge == RotationHandler.LEFT_EDGE)
+		{
+			dxdy = new Vector4f(r.getRightAxis());
+		}
+		else
+		{
+			dxdy = new Vector4f(r.getLeftAxis());
+		}
+		
+		if(direction == RotationHandler.MOVE_UP)
+		{
+			dxdy = dxdy.mul(-1);
+		}
+		return dxdy;
+	}
+	
 	//returns if successful move 
 	//move fails if it hits wall
-	public boolean move(int dx, int dy, RotationHandler r)
+	public boolean move(int edge, int direction, RotationHandler r)
 	{
-		//one direction at a time
-		if(dx * dy != 0)
-		{
-			return false;
-		}
-		//one tile at a time
-		if(Math.abs(dx) > 1 || Math.abs(dy) > 1)
-		{
-			return false;
-		}
+		Vector4f dxdy = getDXDY(edge, direction, r);
+		
+		Tile thisTile = map.getNearestTile(getPosition());
+		Tile nextTile = map.getNearestTile(getPosition().add(dxdy));
+		
+		int dx = nextTile.getXIndex() - thisTile.getXIndex();
+		int dy = nextTile.getYIndex() - thisTile.getYIndex();
 		if(map.wallInDirection(currentFace, curX, curY, dx, dy))
 		{
 			return false;
@@ -144,7 +162,7 @@ public class Player extends Entity
 		
 		if(curX < 0 || curY < 0 || curX >= map.getFaceLength() || curY >= map.getFaceLength())
 		{
-			switchFace(dx, dy, r);
+			switchFace(edge, direction, dx, dy, r);
 			return false;
 		}
 		if(!failed)
@@ -156,11 +174,20 @@ public class Player extends Entity
 		return failed;
 	}
 
-	public void switchFace(int dx, int dy, RotationHandler r)
+	public void switchFace(int edge, int direction, int dx, int dy, RotationHandler r)
 	{
 		Tile t = map.getNearestTile(currentFace, curX + dx, curY + dy);
 		currentFace = t.getFace();
 		this.setPosition(t.getPosition());
+		if(direction == RotationHandler.MOVE_UP)
+		{
+			direction = RotationHandler.MOVE_DOWN;
+		}
+		else
+		{
+			direction = RotationHandler.MOVE_UP;
+		}
+		r.initRotate(edge, direction, (float)Math.PI / 2.f, 1.f);
 		curX = t.getXIndex();
 		curY = t.getYIndex();
 		renderTransform.setRotation(map.getFaceRotation(currentFace));

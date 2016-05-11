@@ -15,6 +15,14 @@ public class Vector4f
 		this.w = w;
 	}
 
+	public void round()
+	{
+		x = Math.round(x);
+		y = Math.round(y);
+		z = Math.round(z);
+		w = Math.round(w);
+	}
+	
 	public void fixW()
 	{
 		w = 1;
