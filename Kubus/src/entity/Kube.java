@@ -39,6 +39,8 @@ public class Kube
 	
 	private ArrayList<ArrayList<Tile>> tiles;
 	private ArrayList<Tile[]> walls;
+	private ArrayList<Tile> edgeWalls;
+	private ArrayList<Tile[]> cornerWalls;
 	private static Bitmap grass;
 	static
 	{
@@ -123,15 +125,29 @@ public class Kube
 	
 	public void addWall(Tile t1, Tile t2)
 	{
-		//check if wall already exists
-		Tile[] newWall = new Tile[]{t1, t2};
-		walls.add(newWall);
+
+		if(t1.getFace() != t2.getFace())
+		{
+			
+		}
+		else
+		{
+			Tile[] newWall = new Tile[]{t1, t2};
+			walls.add(newWall);
+		}
 	}
 	
 	public void addWall(Tile edge)
 	{
+		if((edge.getXIndex() + 1 == faceLength || edge.getXIndex() == 0) &&
+				(edge.getYIndex() + 1 == faceLength || edge.getYIndex() == 0))
+		{
+			return;
+		}
 		
+		edgeWalls.add(edge);
 	}
+	
 	
 	public boolean wallInDirection(int face, int x, int y, int dx, int dy)
 	{

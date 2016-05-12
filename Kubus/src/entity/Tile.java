@@ -79,7 +79,6 @@ public class Tile extends Entity
 		
 		setPosition(cube.getTilePosition(face, xIndex, yIndex));
 		
-
 	}
 	
 	
