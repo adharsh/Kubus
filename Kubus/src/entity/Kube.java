@@ -123,6 +123,12 @@ public class Kube
 			this.y = y;
 			this.face = face;
 		}
+		
+		@Override
+		public boolean equals(TileIndex other)
+		{
+			return (other.x == x && other.y == y && other.face == face);
+		}
 	}
 
 	public Kube(int faceLength, float tileLength)
@@ -249,6 +255,30 @@ public class Kube
 		return false;
 	}
 
+	public boolean wallOnEdge(Tile t, int dx, int dy)
+	{
+		TileIndex t1 = new TileIndex(t.getXIndex(), t.getYIndex(), t.getFace());
+		TileIndex t2 = new TileIndex(t.getXIndex() + dx, t.getYIndex() + dy, t.getFace());
+		for(TileIndex[] wall : cornerWalls)
+		{
+			if(t1.equals(wall[0]))
+			{
+				if(t2.equals(wall[1]))
+				{
+					return true;
+				}
+			}
+			if(t1.equals(wall[1]))
+			{
+				if(t2.equals(wall[0]))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public Tile getNearestTile(int f, int x, int y)
 	{
 		float max = Float.MAX_VALUE;

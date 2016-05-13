@@ -192,6 +192,12 @@ public class Player extends Entity
 				curY -= dy;
 				return false;
 			}
+			if(map.wallOnEdge(thisTile, dx, dy))
+			{
+				curX -= dx;
+				curY -= dy;
+				return false;
+			}
 			if(map.wallOnEdge(map.getNearestTile(currentFace, curX, curY)))
 			{
 				curX -= dx;
