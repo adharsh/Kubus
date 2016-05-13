@@ -64,6 +64,9 @@ public class KubusMain
 		long lastTime = System.currentTimeMillis();
 		kube.addWall(kube.getTileAt(1, 3, 4), kube.getTileAt(1, 4, 4));
 		kube.addWall(kube.getTileAt(1, 4, 4), kube.getTileAt(1, 4, 3));
+		kube.addWall(kube.getTileAt(1, 3, 4));
+		kube.addWall(new Kube.TileIndex(4, 4, 1), new Kube.TileIndex(4, 5, 1));
+//		kube.addWall(new Kube.TileIndex(4, 4, 1), new Kube.TileIndex(5, 4, 1));
 		while(true)
 		{
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000.f;

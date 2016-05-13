@@ -91,8 +91,8 @@ public class Camera
 			position.setXYZW(Math.round(position.getX() * 10.f) / 10.f, Math.round(position.getY() * 10.f) / 10.f, Math.round(position.getZ() * 10.f) / 10.f, 0);
 			fwd = position.mul(-1).normalized();
 			fwd.fixW();
+			
 			rotation.initRotation(fwd, this.axis);
-			System.out.println(rotation.getRow(0));
 		}
 		return interp;
 	}
