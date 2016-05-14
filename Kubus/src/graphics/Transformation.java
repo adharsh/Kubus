@@ -13,6 +13,13 @@ public class Transformation
 		rotation = new Matrix4f().initRotation(0, 0, 0);
 	}
 	
+	public Transformation(Transformation other)
+	{
+		position = new Vector4f(other.position);
+		scale = new Vector4f(other.scale);
+		rotation = new Matrix4f(other.rotation);
+	}
+	
 	public void setPosition(Vector4f position)
 	{
 		this.position = position;

@@ -1,16 +1,15 @@
 package entity;
 
+import java.io.IOException;
+
 import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
-import graphics.Vector4f;
-import graphics.Vertex;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
+import input.QMFLoader;
+import terrain.SpikeTerrain;
 import terrain.Terrain;
+import terrain.TerrainType;
 
 public class Tile extends Entity
 {
@@ -30,21 +29,8 @@ public class Tile extends Entity
 	
 	static
 	{
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-		ArrayList<Integer> indices = new ArrayList<Integer>();
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, .5f, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(1, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(1, 0, 0, 0)));
-
-		indices.add(0);
-		indices.add(1);
-		indices.add(2);
-		indices.add(2);
-		indices.add(3);
-		indices.add(0);
 		
-		squareMesh = new Mesh(vertices, indices);
+		squareMesh = QMFLoader.loadQMF("res/QMF/square.qmf");
 		
 		try {
 			solidColor = new Bitmap("res/graas.jpg");
@@ -55,9 +41,8 @@ public class Tile extends Entity
 	}
 	
 	
-	public Tile(int xIndex, int yIndex, int height, Terrain terrain, Kube cube, int face)
+	public Tile(int xIndex, int yIndex, int height, TerrainType terrain, Kube cube, int face)
 	{
-		this.terrain = terrain;
 		cubeMap = cube;
 		tileXIndex = xIndex;
 		tileYIndex = yIndex;
@@ -78,9 +63,25 @@ public class Tile extends Entity
 		//assuming center is at 0, 0, 0
 		
 		setPosition(cube.getTilePosition(face, xIndex, yIndex));
-		
+
+		this.terrain = createTerrain(terrain);
 	}
 	
+	private Terrain createTerrain(TerrainType type)
+	{
+		if(type == null)
+		{
+			return null;
+		}
+		switch(type)
+		{
+		case SPIKES:
+			return new SpikeTerrain(cubeMap, this);
+		default:
+			return null;
+			
+		}
+	}
 	
 	@Override
 	public void render(Renderer r, Matrix4f viewProjection)
@@ -91,7 +92,7 @@ public class Tile extends Entity
 	
 	public boolean isPlayerOnTile(Player player)
 	{
-		return false;
+		return player.getX() == tileXIndex && player.getY() == tileYIndex && player.getFace() == face;
 	}
 	
 	

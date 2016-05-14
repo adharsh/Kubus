@@ -1,15 +1,16 @@
 package entity;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import game.KubusGame;
 import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
 import graphics.Transformation;
 import graphics.Vector4f;
-import graphics.Vertex;
-
-import java.io.IOException;
-import java.util.ArrayList;
+import input.QMFLoader;
 
 /*
  * assuming there is no rotation on the cube and you are viewing the cube's center from a position of (0, -1, -1)
@@ -44,68 +45,7 @@ public class Kube
 	private static Bitmap grass;
 	static
 	{
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-		ArrayList<Integer> indices = new ArrayList<Integer>();
-
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, -0.5f, 1), new Vector4f(0.5f, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, -0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0, 0.5f, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0, 0.5f, 1), new Vector4f(0.5f, 0, 0, 0)));
-
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, -0.5f, 1), new Vector4f(0.5f, 0.25f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, -0.5f, 1), new Vector4f(0, 0.25f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(-0.5f, 0.2f, 0.5f, 1), new Vector4f(0, 0.25f, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.5f, 0.2f, 0.5f, 1), new Vector4f(0.5f, 0.25f, 0, 0)));
-
-		indices.add(0);
-		indices.add(1);
-		indices.add(2);
-
-		indices.add(1);
-		indices.add(3);
-		indices.add(2);
-
-		indices.add(0);
-		indices.add(2);
-		indices.add(4);
-
-		indices.add(4);
-		indices.add(6);
-		indices.add(2);
-
-		indices.add(4);
-		indices.add(5);
-		indices.add(6);
-
-		indices.add(5);
-		indices.add(6);
-		indices.add(7);
-
-		indices.add(4);
-		indices.add(0);
-		indices.add(1);
-
-		indices.add(5);
-		indices.add(4);
-		indices.add(1);
-
-		indices.add(5);
-		indices.add(7);
-		indices.add(3);
-
-		indices.add(5);
-		indices.add(1);
-		indices.add(3);
-
-		indices.add(6);
-		indices.add(7);
-		indices.add(2);
-
-		indices.add(7);
-		indices.add(3);
-		indices.add(2);
-
-		wallMesh = new Mesh(vertices, indices);
+		wallMesh = QMFLoader.loadQMF("res/QMF/wall.qmf");
 		try {
 			grass = new Bitmap("res/brik.jpg");
 		} catch (IOException e) {
@@ -124,7 +64,6 @@ public class Kube
 			this.face = face;
 		}
 		
-		@Override
 		public boolean equals(TileIndex other)
 		{
 			return (other.x == x && other.y == y && other.face == face);
@@ -165,6 +104,21 @@ public class Kube
 		edgeWalls.add(edge);
 	}
 
+	public void tileAffectPlayer(Player player, KubusGame game)
+	{
+		Tile currentLoc = this.getTileAt(player.getFace(), player.getX(), player.getY());
+		if(currentLoc == null || currentLoc.getTerrain() == null)
+		{
+			return;
+		}
+		
+		currentLoc.getTerrain().affectPlayer(player);
+		
+		if(player.getHealth() <= 0.0)
+		{
+			game.setGameOver(true);
+		}
+	}
 
 	public boolean wallInDirection(int face, int x, int y, int dx, int dy)
 	{
@@ -372,19 +326,11 @@ public class Kube
 		return getRelativeRotation(face);
 	}
 	
-	public void renderFaces(Renderer render, Matrix4f viewProjection)
+	public void renderWalls(Renderer render, Matrix4f viewProjection)
 	{
-		for(int a=0;a<6;a++)
-		{
-			for(int b=0;b<tiles.get(a).size();b++)
-			{
-				tiles.get(a).get(b).render(render, viewProjection);
-			}
-		}
 		Transformation tf = new Transformation();
 		Vector4f pos = new Vector4f(0, 0, 0, 1);
 		tf.setScale(tileLength, tileLength, tileLength);
-
 		for(Tile[] wall : walls)
 		{
 			Vector4f pos1 = wall[0].renderTransform.getPosition(), pos2 = wall[1].renderTransform.getPosition();
@@ -474,6 +420,23 @@ public class Kube
 				wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
 			}
 		}
+	}
+	
+	public void renderFaces(Renderer render, Matrix4f viewProjection)
+	{
+		for(int a=0;a<6;a++)
+		{
+			for(int b=0;b<tiles.get(a).size();b++)
+			{
+				tiles.get(a).get(b).render(render, viewProjection);
+				if(tiles.get(a).get(b).getTerrain() != null)
+				{
+					tiles.get(a).get(b).getTerrain().render(render, viewProjection);
+				}
+			}
+		}
+
+		
 	}
 
 	private Matrix4f getRelativeRotation(int relativeFace)

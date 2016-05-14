@@ -10,10 +10,11 @@ import graphics.Renderer;
 import graphics.RotationHandler;
 import graphics.Vector4f;
 import graphics.Vertex;
+import input.QMFLoader;
 
 public class Player extends Entity
 {
-	private static final double MAX_HEALTH = 100;
+	public static final double MAX_HEALTH = 100;
 	private static Mesh entMesh;
 	private double health;
 	//face the player is on
@@ -22,27 +23,30 @@ public class Player extends Entity
 	private int curX, curY;
 	private static Bitmap solidColor;
 	
-	
+		private boolean dying;
+		private float deathInterpAmt;
+		//1 second to die
+		
 		private boolean isMoving;
 		//vector which describes move at inception
 		private Vector4f moveVector;
 		private float interpAmt;
-		//.5 seconds to move
+		//.25 seconds to move
 		
 	static
 	{
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-		ArrayList<Integer> indices = new ArrayList<Integer>();
-
-		vertices.add(new Vertex(new Vector4f(-0.3f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0.3f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
-		vertices.add(new Vertex(new Vector4f(0, .45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
-
-		indices.add(0);
-		indices.add(1);
-		indices.add(2);
+//		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+//		ArrayList<Integer> indices = new ArrayList<Integer>();
+//
+//		vertices.add(new Vertex(new Vector4f(-0.3f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
+//		vertices.add(new Vertex(new Vector4f(0.3f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
+//		vertices.add(new Vertex(new Vector4f(0, .45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
+//
+//		indices.add(0);
+//		indices.add(1);
+//		indices.add(2);
 		
-		entMesh = new Mesh(vertices, indices);
+		entMesh = QMFLoader.loadQMF("res/QMF/player.qmf");//new Mesh(vertices, indices);
 		
 		try {
 			solidColor = new Bitmap("res/whale.jpg");
@@ -78,6 +82,48 @@ public class Player extends Entity
 		{
 			health = 0;
 		}
+	}
+	
+	public boolean isDying()
+	{
+		return dying;
+	}
+	
+	public void beginDeath()
+	{
+		dying = true;
+		deathInterpAmt = 0;
+	}
+	
+	public void dieTick(float deltaTime)
+	{
+		if(deathInterpAmt + deltaTime > 2.f)
+		{
+			deathInterpAmt = 3;
+			dying = false;
+		}
+		else
+		{
+			deathInterpAmt += deltaTime;
+		}
+		Matrix4f rot = renderTransform.getRotation();
+		
+		Vector4f fwd = rot.getRow(2);
+		Vector4f up = rot.getRow(1);
+		Vector4f rt = rot.getRow(0);
+		fwd = fwd.rotate(up, -deltaTime * 9);
+		rt = rt.rotate(up, -deltaTime * 9);
+		rot.set(2, 0, fwd.getX());
+		rot.set(2, 1, fwd.getY());
+		rot.set(2, 2, fwd.getZ());
+		rot.set(0, 0, rt.getX());
+		rot.set(0, 1, rt.getY());
+		rot.set(0, 2, rt.getZ());
+		renderTransform.setPosition(renderTransform.getPosition().add(
+				up.mul((((deathInterpAmt / 2.f) * (deathInterpAmt / 2.f)) 
+						/ map.getTileLength()) * deltaTime)));
+		renderTransform.setScale(map.getTileLength(),
+				map.getTileLength() * ((2.f - deathInterpAmt) / 2.f), map.getTileLength());
 	}
 	
 	public void resetHealth()
@@ -233,5 +279,20 @@ public class Player extends Entity
 		curX = t.getXIndex();
 		curY = t.getYIndex();
 		renderTransform.setRotation(map.getFaceRotation(currentFace));
+	}
+	
+	public int getX()
+	{
+		return curX;
+	}
+	
+	public int getY()
+	{
+		return curY;
+	}
+	
+	public int getFace()
+	{
+		return currentFace;
 	}
 }

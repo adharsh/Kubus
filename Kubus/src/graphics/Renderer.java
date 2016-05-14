@@ -13,6 +13,17 @@ public class Renderer extends Bitmap
 		super(w, h);
 		depthBuffer = new float[w * h];
 	}
+	
+	public void drawRectangle(int x, int y, int w, int h, int bgr)
+	{
+		for(int a=0;a<w;a++)
+		{
+			for(int b=0;b<h;b++)
+			{
+				this.setPixelBGR(x + a, y + b, bgr);
+			}
+		}
+	}
 
 	public void clearDepthBuffer()
 	{
@@ -66,10 +77,6 @@ public class Renderer extends Bitmap
 		Vertex midY = v2.transform(screenSpaceTransform).perspectiveDivide();
 		Vertex maxY = v3.transform(screenSpaceTransform).perspectiveDivide();
 
-//		if(minY.triangleArea(midY, maxY) <= 0)
-//		{
-//			return;
-//		}
 
 		if(maxY.getY() < midY.getY())
 		{

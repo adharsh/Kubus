@@ -1,12 +1,11 @@
 package terrain;
 
+import entity.Entity;
 import entity.Player;
-import graphics.Bitmap;
 
-public interface Terrain
+public abstract class Terrain extends Entity
 {
-	public TerrainType getTerrainType();
-	public Bitmap getTerrainTexture();
-	public void affectPlayer(Player player);
+	public abstract TerrainType getTerrainType();
+	public abstract void affectPlayer(Player player);
 	
 }

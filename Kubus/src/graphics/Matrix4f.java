@@ -8,6 +8,18 @@ public class Matrix4f
 	{
 		m = new float[4][4];
 	}
+	
+	public Matrix4f(Matrix4f other)
+	{
+		m = new float[4][4];
+		for(int a=0;a<4;a++)
+		{
+			for(int b=0;b<4;b++)
+			{
+				m[a][b] = other.m[a][b];
+			}
+		}
+	}
 
 	public Matrix4f initIdentity()
 	{
