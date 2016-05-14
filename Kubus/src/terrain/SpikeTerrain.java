@@ -16,7 +16,6 @@ public class SpikeTerrain extends Terrain
 	private static final Mesh spikeMesh;
 	private static final Bitmap spikeTexture;
 	private Kube map;
-	private Tile tile;
 	
 	static
 	{
@@ -29,7 +28,6 @@ public class SpikeTerrain extends Terrain
 	public SpikeTerrain(Kube map, Tile tile)
 	{
 		this.map = map;
-		this.tile = tile;
 		setPosition(tile.getPosition());
 		renderTransform.setRotation(map.getFaceRotation(tile.getFace()));
 		renderTransform.setScale(map.getTileLength(), map.getTileLength(), map.getTileLength());

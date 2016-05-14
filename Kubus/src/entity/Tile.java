@@ -7,6 +7,7 @@ import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
 import input.QMFLoader;
+import terrain.FireTerrain;
 import terrain.SpikeTerrain;
 import terrain.Terrain;
 import terrain.TerrainType;
@@ -77,6 +78,8 @@ public class Tile extends Entity
 		{
 		case SPIKES:
 			return new SpikeTerrain(cubeMap, this);
+		case FIRE:
+			return new FireTerrain(cubeMap, this);
 		default:
 			return null;
 			

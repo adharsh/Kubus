@@ -1,7 +1,6 @@
 package entity;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import graphics.Bitmap;
 import graphics.Matrix4f;
@@ -9,7 +8,6 @@ import graphics.Mesh;
 import graphics.Renderer;
 import graphics.RotationHandler;
 import graphics.Vector4f;
-import graphics.Vertex;
 import input.QMFLoader;
 
 public class Player extends Entity
@@ -110,15 +108,30 @@ public class Player extends Entity
 		
 		Vector4f fwd = rot.getRow(2);
 		Vector4f up = rot.getRow(1);
+		
 		Vector4f rt = rot.getRow(0);
-		fwd = fwd.rotate(up, -deltaTime * 9);
-		rt = rt.rotate(up, -deltaTime * 9);
-		rot.set(2, 0, fwd.getX());
-		rot.set(2, 1, fwd.getY());
-		rot.set(2, 2, fwd.getZ());
-		rot.set(0, 0, rt.getX());
-		rot.set(0, 1, rt.getY());
-		rot.set(0, 2, rt.getZ());
+		if(currentFace != Kube.TOP && currentFace != Kube.BOTTOM)
+		{
+			fwd = fwd.rotate(up, -deltaTime * 9);
+			rt = rt.rotate(up, -deltaTime * 9);
+			rot.set(2, 0, fwd.getX());
+			rot.set(2, 1, fwd.getY());
+			rot.set(2, 2, fwd.getZ());
+			rot.set(0, 0, rt.getX());
+			rot.set(0, 1, rt.getY());
+			rot.set(0, 2, rt.getZ());
+		}
+		else
+		{
+			fwd = fwd.rotate(up, -deltaTime * 9);
+			rt = rt.rotate(up, -deltaTime * 9);
+			rot.set(2, 0, fwd.getX());
+			rot.set(2, 1, fwd.getY());
+			rot.set(2, 2, fwd.getZ());
+			rot.set(0, 0, rt.getX());
+			rot.set(0, 1, rt.getY());
+			rot.set(0, 2, rt.getZ());
+		}
 		renderTransform.setPosition(renderTransform.getPosition().add(
 				up.mul((((deathInterpAmt / 2.f) * (deathInterpAmt / 2.f)) 
 						/ map.getTileLength()) * deltaTime)));
@@ -239,12 +252,6 @@ public class Player extends Entity
 				return false;
 			}
 			if(map.wallOnEdge(thisTile, dx, dy))
-			{
-				curX -= dx;
-				curY -= dy;
-				return false;
-			}
-			if(map.wallOnEdge(map.getNearestTile(currentFace, curX, curY)))
 			{
 				curX -= dx;
 				curY -= dy;

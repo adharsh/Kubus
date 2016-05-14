@@ -26,7 +26,7 @@ public class KubusGame
 		input = new KeyInput();
 		display.addKeyListener(input);
 		//temporary:
-		kube = new Kube(5, 0.2f);
+		kube = new Kube(5, 0.3f);
 		
 		for(int f=1;f<=6;f++)
 		{
@@ -36,7 +36,7 @@ public class KubusGame
 				{
 					if(a == 2 && b == 2)
 					{
-						new Tile(a, b, 0, TerrainType.SPIKES, kube, f);
+						new Tile(a, b, 0, TerrainType.FIRE, kube, f);
 					}
 					else
 					{
@@ -51,7 +51,7 @@ public class KubusGame
 		camera.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
 		camera.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
 		rotHandler = new RotationHandler(camera);
-		kube.addWall(kube.getTileAt(1, 4, 3));
+		kube.addWall(kube.getTileAt(6, 4, 3));
 	}
 	
 	public void setGameOver(boolean over)
@@ -73,7 +73,6 @@ public class KubusGame
 	{
 		if(rotHandler.isRunning())
 		{
-			player.takeHealth(0.1);
 			rotHandler.rotate(deltaTime);
 		}
 		else if(player.isDying())

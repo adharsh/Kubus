@@ -256,7 +256,7 @@ public class Kube
 
 	public Tile getTileAt(int face, int xIndex, int yIndex)
 	{
-		if(face >= tiles.size() || xIndex >= faceLength || yIndex >= faceLength)
+		if(face - 1 >= tiles.size() || xIndex >= faceLength || yIndex >= faceLength)
 			return null;
 		face--;
 		ArrayList<Tile> arrayListFace = tiles.get(face);
@@ -446,15 +446,15 @@ public class Kube
 		case TOP:
 			return new Matrix4f().initRotation(0, 0, 0);
 		case FRONT:
-			return new Matrix4f().initRotation((float)Math.toRadians(90), 0, 0);
+			return new Matrix4f().initRotation((float)Math.toRadians(90), 0, (float)Math.toRadians(180));
 		case BOTTOM:
 			return new Matrix4f().initRotation((float)Math.toRadians(180), 0, 0);
 		case BACK:
-			return new Matrix4f().initRotation(-(float)Math.toRadians(90), 0, 0);
+			return new Matrix4f().initRotation(-(float)Math.toRadians(90), 0, (float)Math.toRadians(180));
 		case LEFT:
-			return new Matrix4f().initRotation(0, 0, (float)Math.toRadians(90));
+			return new Matrix4f().initRotation(0, (float)Math.toRadians(180), (float)Math.toRadians(90));
 		case RIGHT:
-			return new Matrix4f().initRotation(0, 0, -(float)Math.toRadians(90));
+			return new Matrix4f().initRotation(0, (float)Math.toRadians(180), -(float)Math.toRadians(90));
 		}
 		return null;
 	}
