@@ -11,6 +11,7 @@ import graphics.Renderer;
 import graphics.Transformation;
 import graphics.Vector4f;
 import input.QMFLoader;
+import terrain.TerrainType;
 
 /*
  * assuming there is no rotation on the cube and you are viewing the cube's center from a position of (0, -1, -1)
@@ -31,6 +32,7 @@ public class Kube
 	public static final int BACK = 4;
 	public static final int LEFT = 5;
 	public static final int RIGHT = 6;
+	
 
 	private float tileLength;
 	//try 10x10 faces
@@ -120,6 +122,29 @@ public class Kube
 		}
 	}
 
+	public TerrainType getTerrainTypeAt(int f, int x, int y)
+	{
+		f--;
+		if(f > 5 || f < 0)
+		{
+			return TerrainType.ERROR_TYPE;
+		}
+		if(x >= faceLength || x < 0 || y >= faceLength || y < 0)
+		{
+			return TerrainType.ERROR_TYPE;
+		}
+		
+		ArrayList<Tile> face = tiles.get(f);
+		for(Tile t : face)
+		{
+			if(t.getXIndex() == x && t.getYIndex() == y)
+			{
+				return t.getTerrain().getTerrainType();
+			}
+		}
+		return TerrainType.ERROR_TYPE;
+	}
+	
 	public boolean wallInDirection(int face, int x, int y, int dx, int dy)
 	{
 		Tile thisTile = getTileAt(face, x, y);

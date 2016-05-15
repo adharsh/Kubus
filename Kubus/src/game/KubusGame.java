@@ -27,7 +27,12 @@ public class KubusGame
 		display.addKeyListener(input);
 		//temporary:
 		kube = new Kube(5, 0.3f);
-		
+
+		camera = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), (float)display.getWidth() / (float)display.getHeight(), 
+				0.1f, 1000.f));
+		camera.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
+		camera.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
+		rotHandler = new RotationHandler(camera);
 		for(int f=1;f<=6;f++)
 		{
 			for(int a=0;a<5;a++)
@@ -36,21 +41,20 @@ public class KubusGame
 				{
 					if(a == 2 && b == 2)
 					{
-						new Tile(a, b, 0, TerrainType.FIRE, kube, f);
+						new Tile(a, b, 0, TerrainType.FIRE, kube, f, rotHandler);
+					}
+					else if(a == 4)
+					{
+						new Tile(a, b, 0, TerrainType.ICE, kube, f, rotHandler);
 					}
 					else
 					{
-						new Tile(a, b, 0, null, kube, f);
+						new Tile(a, b, 0, null, kube, f, rotHandler);
 					}
 				}
 			}
 		}
 		player = new Player(1, 0, 0, kube);
-		camera = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), (float)display.getWidth() / (float)display.getHeight(), 
-				0.1f, 1000.f));
-		camera.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
-		camera.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
-		rotHandler = new RotationHandler(camera);
 		kube.addWall(kube.getTileAt(6, 4, 3));
 	}
 	
@@ -88,6 +92,14 @@ public class KubusGame
 		{
 			if(player.isMovingToNextTile())
 			{
+				if(kube.getTerrainTypeAt(player.getFace(), player.getX(), player.getY()) == TerrainType.FIRE)
+				{
+					kube.getTileAt(player.getFace(), player.getX(), player.getY()).getTerrain().affectPlayer(player);
+				}
+				else if(kube.getTerrainTypeAt(player.getFace(), player.getPrevX(), player.getPrevY()) == TerrainType.FIRE)
+				{
+					kube.getTileAt(player.getFace(), player.getPrevX(), player.getPrevY()).getTerrain().affectPlayer(player);
+				}
 				player.moveTick(deltaTime);
 			}
 			else

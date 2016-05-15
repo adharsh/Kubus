@@ -54,7 +54,6 @@ public class FireTerrain extends Terrain
 		super.render(render, viewProjection);
 		Transformation tf = new Transformation(renderTransform);
 		tf.setScale(map.getTileLength(), map.getTileLength(), map.getTileLength());
-//		Vector4f right = tf.getRotation().getRow(0).normalized().mul(map.getTileLength() / 9);
 		Vector4f fwd = tf.getRotation().getRow(2).normalized().mul(map.getTileLength() / 9);
 		fireMesh.draw(render, viewProjection, tf.getTransformation(), fireTextureOuter);
 		tf.setScale(map.getTileLength() / 1.8f, map.getTileLength() / 1.8f, map.getTileLength() / 1.8f);

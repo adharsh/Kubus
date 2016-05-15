@@ -1,0 +1,21 @@
+QMF fmt:
+1)vertex section, 2)index section, 3)texcoord section
+sections split by  "\n|\n"
+vertex, index groups, and texcoords are split by "\n"
+vertices, indices, and texcoords are loaded in order of file
+indices in groups of 3
+each texcoord corresponds to each vertex
+	ex:
+
+0,0,0
+1,0,0
+1,1,0
+0,1,0
+|
+0,1,2
+2,3,0
+|
+0,0
+1,0
+1,1
+0,1

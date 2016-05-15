@@ -18,42 +18,40 @@ public class Player extends Entity
 	//face the player is on
 	private int currentFace;
 	private Kube map;
-	private int curX, curY;
-	private static Bitmap solidColor;
+
+
+	private int lastMoveEdge;
+	private int lastMoveDirection;
 	
+	private int curX, curY;
+	private int prevX, prevY;
+	private static Bitmap playerTexture;
+
 		private boolean dying;
 		private float deathInterpAmt;
 		//1 second to die
-		
+	
 		private boolean isMoving;
 		//vector which describes move at inception
 		private Vector4f moveVector;
 		private float interpAmt;
 		//.25 seconds to move
-		
+
 	static
 	{
-//		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-//		ArrayList<Integer> indices = new ArrayList<Integer>();
-//
-//		vertices.add(new Vertex(new Vector4f(-0.3f, 0, 0, 1), new Vector4f(0, 0, 0, 0)));
-//		vertices.add(new Vertex(new Vector4f(0.3f, 0, 0, 1), new Vector4f(0, 1, 0, 0)));
-//		vertices.add(new Vertex(new Vector4f(0, .45f, 0, 1), new Vector4f(0.5f, 0.5f, 0, 0)));
-//
-//		indices.add(0);
-//		indices.add(1);
-//		indices.add(2);
-		
-		entMesh = QMFLoader.loadQMF("res/QMF/player.qmf");//new Mesh(vertices, indices);
-		
-		try {
-			solidColor = new Bitmap("res/whale.jpg");
-		} catch (IOException e) {
-			solidColor = new Bitmap(1, 1);
-			e.printStackTrace();
+
+		entMesh = QMFLoader.loadQMF("res/QMF/player.qmf");
+
+		try 
+		{
+			playerTexture = new Bitmap("res/human.jpg");
+		}
+		catch(IOException e)
+		{
+			playerTexture = new Bitmap(1, 1);
 		}
 	}
-	
+
 	public Player(int startFace, int startX, int startY, Kube map) 
 	{
 		health = MAX_HEALTH;
@@ -61,18 +59,21 @@ public class Player extends Entity
 		this.map = map;
 		curX = startX;
 		curY = startY;
+		prevX = curX;
+		prevY = curY;
+		lastMoveDirection = -1;
 		setPosition(map.getTilePosition(startFace, startX, startY));
 
 		renderTransform.setScale(map.getTileLength(), map.getTileLength(), map.getTileLength());
 	}
-	
+
 	@Override
 	public void render(Renderer r, Matrix4f viewProjection)
 	{
 		super.render(r, viewProjection);
-		entMesh.draw(r, viewProjection, renderTransform.getTransformation(), solidColor);
+		entMesh.draw(r, viewProjection, renderTransform.getTransformation(), playerTexture);
 	}
-	
+
 	public void takeHealth(double amount)
 	{
 		health -= amount;
@@ -81,18 +82,18 @@ public class Player extends Entity
 			health = 0;
 		}
 	}
-	
+
 	public boolean isDying()
 	{
 		return dying;
 	}
-	
+
 	public void beginDeath()
 	{
 		dying = true;
 		deathInterpAmt = 0;
 	}
-	
+
 	public void dieTick(float deltaTime)
 	{
 		if(deathInterpAmt + deltaTime > 2.f)
@@ -105,81 +106,67 @@ public class Player extends Entity
 			deathInterpAmt += deltaTime;
 		}
 		Matrix4f rot = renderTransform.getRotation();
-		
+
 		Vector4f fwd = rot.getRow(2);
 		Vector4f up = rot.getRow(1);
-		
+
 		Vector4f rt = rot.getRow(0);
-		if(currentFace != Kube.TOP && currentFace != Kube.BOTTOM)
-		{
-			fwd = fwd.rotate(up, -deltaTime * 9);
-			rt = rt.rotate(up, -deltaTime * 9);
-			rot.set(2, 0, fwd.getX());
-			rot.set(2, 1, fwd.getY());
-			rot.set(2, 2, fwd.getZ());
-			rot.set(0, 0, rt.getX());
-			rot.set(0, 1, rt.getY());
-			rot.set(0, 2, rt.getZ());
-		}
-		else
-		{
-			fwd = fwd.rotate(up, -deltaTime * 9);
-			rt = rt.rotate(up, -deltaTime * 9);
-			rot.set(2, 0, fwd.getX());
-			rot.set(2, 1, fwd.getY());
-			rot.set(2, 2, fwd.getZ());
-			rot.set(0, 0, rt.getX());
-			rot.set(0, 1, rt.getY());
-			rot.set(0, 2, rt.getZ());
-		}
+		fwd = fwd.rotate(up, -deltaTime * 18 * (float)Math.pow(deathInterpAmt, 2));
+		rt = rt.rotate(up, -deltaTime * 18 * (float)Math.pow(deathInterpAmt, 2));
+		rot.set(2, 0, fwd.getX());
+		rot.set(2, 1, fwd.getY());
+		rot.set(2, 2, fwd.getZ());
+		rot.set(0, 0, rt.getX());
+		rot.set(0, 1, rt.getY());
+		rot.set(0, 2, rt.getZ());	
 		renderTransform.setPosition(renderTransform.getPosition().add(
 				up.mul((((deathInterpAmt / 2.f) * (deathInterpAmt / 2.f)) 
 						/ map.getTileLength()) * deltaTime)));
 		renderTransform.setScale(map.getTileLength(),
 				map.getTileLength() * ((2.f - deathInterpAmt) / 2.f), map.getTileLength());
 	}
-	
+
 	public void resetHealth()
 	{
 		health = MAX_HEALTH;
 	}
-	
+
 	public double getHealth()
 	{
 		return health;
 	}
-	
+
 	public boolean isMovingToNextTile()
 	{
 		return isMoving;
 	}
-	
+
 	//returns if move is done
 	public boolean moveTick(float deltaTime)
 	{
 		float moveAmount;
-		if(interpAmt + (4 * deltaTime) > 1.f)
+		if(interpAmt + (deltaTime) > .25f)
 		{
-			moveAmount = 1.f - interpAmt;
-			interpAmt = 1.f;
+			moveAmount = .25f - interpAmt;
+			interpAmt = .25f;
 			isMoving = false;
 		}
 		else
 		{
-			moveAmount = (4 * deltaTime);
+			moveAmount = (deltaTime);
 			interpAmt += moveAmount;
 		}
-		float xDist = moveVector.getX() * moveAmount;
-		float yDist = moveVector.getY() * moveAmount;
-		float zDist = moveVector.getZ() * moveAmount;
-		
+		float xDist = moveVector.getX() * moveAmount * 4;
+		float yDist = moveVector.getY() * moveAmount * 4;
+		float zDist = moveVector.getZ() * moveAmount * 4;
+
 		setPosition(getPosition().add(new Vector4f(xDist, yDist, zDist, 0)));
-		
+
 		return !isMoving;
 	}
-	
+
 	//initial condition: x goes along x axis, y goes along z axis
-	
+
 	private Vector4f getDXDY(int edge, int direction, RotationHandler r)
 	{
 		Vector4f dxdy;
@@ -201,21 +188,23 @@ public class Player extends Entity
 		}
 		return dxdy;
 	}
-	
+
 	//returns if successful move 
 	//move fails if it hits wall
 	public boolean move(int edge, int direction, RotationHandler r)
 	{
+		lastMoveEdge = edge;
+		lastMoveDirection = direction;
 		Vector4f dxdy = getDXDY(edge, direction, r);
-		
+
 		Tile thisTile = map.getNearestTile(getPosition(), currentFace);
 		Tile nextTile = map.getNearestTile(getPosition().add(dxdy), currentFace);
-		
+
 		if(thisTile == null)
 		{
 			return false;
 		}
-		
+
 		int dx;
 		int dy;
 		if(nextTile != null)
@@ -233,26 +222,34 @@ public class Player extends Entity
 			dx = thisTile.getXIndex() - nextTile.getXIndex();
 			dy = thisTile.getYIndex() - nextTile.getYIndex();
 		}
-		
+
 		if(map.wallInDirection(currentFace, curX, curY, dx, dy))
 		{
 			return false;
 		}
-		
+
 		boolean failed = false;
+		int tempX = prevX;
+		int tempY = prevY;
+		prevX = curX;
+		prevY = curY;
 		curX += dx;
 		curY += dy;
-		
+
 		if(curX < 0 || curY < 0 || curX >= map.getFaceLength() || curY >= map.getFaceLength())
 		{
 			if(map.wallOnEdge(thisTile))
 			{
+				prevX = tempX;
+				prevY = tempY;
 				curX -= dx;
 				curY -= dy;
 				return false;
 			}
 			if(map.wallOnEdge(thisTile, dx, dy))
 			{
+				prevX = tempX;
+				prevY = tempY;
 				curX -= dx;
 				curY -= dy;
 				return false;
@@ -271,6 +268,8 @@ public class Player extends Entity
 
 	public void switchFace(int edge, int direction, RotationHandler r)
 	{
+		//TODO: optional to change me
+//		lastMoveDirection = -1;
 		Tile t = map.getNearestTile(currentFace, curX, curY);
 		currentFace = t.getFace();
 		this.setPosition(t.getPosition());
@@ -285,21 +284,44 @@ public class Player extends Entity
 		r.initRotate(edge, direction, (float)Math.PI / 2.f, 1.f);
 		curX = t.getXIndex();
 		curY = t.getYIndex();
+		prevX = curX;
+		prevY = curY;
 		renderTransform.setRotation(map.getFaceRotation(currentFace));
 	}
-	
+
 	public int getX()
 	{
 		return curX;
 	}
-	
+
 	public int getY()
 	{
 		return curY;
 	}
-	
+
 	public int getFace()
 	{
 		return currentFace;
+	}
+
+	public int getPrevX()
+	{
+		return prevX;
+	}
+
+	public int getPrevY()
+	{
+		return prevY;
+	}
+
+	
+	public int getLastMoveEdge()
+	{
+		return lastMoveEdge;
+	}
+
+	public int getLastMoveDirection() 
+	{
+		return lastMoveDirection;
 	}
 }

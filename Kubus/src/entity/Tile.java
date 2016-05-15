@@ -6,8 +6,11 @@ import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
 import graphics.Renderer;
+import graphics.RotationHandler;
 import input.QMFLoader;
 import terrain.FireTerrain;
+import terrain.IceTerrain;
+import terrain.NoTerrain;
 import terrain.SpikeTerrain;
 import terrain.Terrain;
 import terrain.TerrainType;
@@ -26,23 +29,46 @@ public class Tile extends Entity
 	private int face;
 	
 	private static final Mesh squareMesh;
-	public static Bitmap solidColor;
+	public static Bitmap grassTexture;
+	public static Bitmap iceTexture;
+	public static Bitmap waterTexture;
+	
 	
 	static
 	{
 		
 		squareMesh = QMFLoader.loadQMF("res/QMF/square.qmf");
 		
-		try {
-			solidColor = new Bitmap("res/graas.jpg");
-		} catch (IOException e) {
-			solidColor = new Bitmap(1, 1);
-			e.printStackTrace();
+		try 
+		{
+			grassTexture = new Bitmap("res/graas.jpg");
+		}
+		catch(IOException e) 
+		{
+			grassTexture = new Bitmap(1, 1);
+		}
+		
+		try 
+		{
+			iceTexture = new Bitmap("res/ice.jpg");
+		}
+		catch(IOException e) 
+		{
+			iceTexture = new Bitmap(1, 1);
+		}
+		
+		try 
+		{
+			waterTexture = new Bitmap("res/water.jpg");
+		}
+		catch(IOException e) 
+		{
+			waterTexture = new Bitmap(1, 1);
 		}
 	}
 	
 	
-	public Tile(int xIndex, int yIndex, int height, TerrainType terrain, Kube cube, int face)
+	public Tile(int xIndex, int yIndex, int height, TerrainType terrain, Kube cube, int face, RotationHandler r)
 	{
 		cubeMap = cube;
 		tileXIndex = xIndex;
@@ -65,14 +91,14 @@ public class Tile extends Entity
 		
 		setPosition(cube.getTilePosition(face, xIndex, yIndex));
 
-		this.terrain = createTerrain(terrain);
+		this.terrain = createTerrain(terrain, r);
 	}
 	
-	private Terrain createTerrain(TerrainType type)
+	private Terrain createTerrain(TerrainType type, RotationHandler r)
 	{
 		if(type == null)
 		{
-			return null;
+			return new NoTerrain();
 		}
 		switch(type)
 		{
@@ -80,8 +106,10 @@ public class Tile extends Entity
 			return new SpikeTerrain(cubeMap, this);
 		case FIRE:
 			return new FireTerrain(cubeMap, this);
+		case ICE:
+			return new IceTerrain(cubeMap, this, r);
 		default:
-			return null;
+			return new NoTerrain();
 			
 		}
 	}
@@ -90,7 +118,20 @@ public class Tile extends Entity
 	public void render(Renderer r, Matrix4f viewProjection)
 	{
 		super.render(r, viewProjection);
-		squareMesh.draw(r, viewProjection, renderTransform.getTransformation(), solidColor);
+		Bitmap texture;
+		if(terrain.getTerrainType() == TerrainType.ICE)
+		{
+			texture = iceTexture;
+		}
+		else if(terrain.getTerrainType() == TerrainType.WATER)
+		{
+			texture = waterTexture;
+		}
+		else
+		{
+			texture = grassTexture;
+		}
+		squareMesh.draw(r, viewProjection, renderTransform.getTransformation(), texture);
 	}
 	
 	public boolean isPlayerOnTile(Player player)
