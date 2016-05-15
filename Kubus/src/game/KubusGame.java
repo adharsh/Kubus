@@ -39,30 +39,17 @@ public class KubusGame
 			{
 				for(int b=0;b<5;b++)
 				{
-//					if(a == 4 && b == 3)
-//					{
-//						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.FIRE, kube, f, rotHandler);
-//					}
-//					else if(a == 4 && b == 2)
-//					{
-//						new Tile(a, b, Tile.TILEHEIGHT_HIGH, null, kube, f, rotHandler);
-//					}
-//					else if(a == 3)
-//					{
-//						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
-//					}
-//					else
-//					{
-//						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
-//					}
-					double rn = Math.random();
-					if(rn < 0.3)
+					if(a == 4 && b == 3)
 					{
-						new Tile(a, b, Tile.TILEHEIGHT_LOW, null, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.FIRE, kube, f, rotHandler);
 					}
-					else if(rn >= 0.3 && rn < 0.6) 
+					else if(a == 4 && b == 2)
 					{
 						new Tile(a, b, Tile.TILEHEIGHT_HIGH, null, kube, f, rotHandler);
+					}
+					else if(a == 3)
+					{
+						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
 					}
 					else
 					{
