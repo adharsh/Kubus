@@ -28,6 +28,11 @@ public class Vector4f
 		w = 1;
 	}
 	
+	public void zeroW()
+	{
+		w = 0;
+	}
+	
 	public Vector4f(float x, float y, float z)
 	{
 		this(x, y, z, 1.0f);

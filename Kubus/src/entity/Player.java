@@ -9,6 +9,8 @@ import graphics.Renderer;
 import graphics.RotationHandler;
 import graphics.Vector4f;
 import input.QMFLoader;
+import terrain.TerrainType;
+import terrain.WaterTerrain;
 
 public class Player extends Entity
 {
@@ -27,6 +29,10 @@ public class Player extends Entity
 	private int prevX, prevY;
 	private static Bitmap playerTexture;
 
+		private float heightInterpAmt;
+		private boolean isMovingUp;
+		private boolean isMovingDown;
+	
 		private boolean dying;
 		private float deathInterpAmt;
 		//1 second to die
@@ -35,6 +41,7 @@ public class Player extends Entity
 		//vector which describes move at inception
 		private Vector4f moveVector;
 		private float interpAmt;
+		private boolean slowMove;
 		//.25 seconds to move
 
 	static
@@ -54,6 +61,8 @@ public class Player extends Entity
 
 	public Player(int startFace, int startX, int startY, Kube map) 
 	{
+		isMovingUp = false;
+		isMovingDown = false;
 		health = MAX_HEALTH;
 		currentFace = startFace;
 		this.map = map;
@@ -141,15 +150,101 @@ public class Player extends Entity
 		return isMoving;
 	}
 
+	private boolean moveTickSlow(float deltaTime)
+	{
+		float moveAmount;
+		
+		if(interpAmt + (deltaTime) > 1.f)
+		{
+			moveAmount = 1.f - interpAmt;
+			interpAmt = 1.f;
+		}
+		else
+		{
+			moveAmount = (deltaTime);
+			interpAmt += moveAmount;
+		}
+		float xDist = moveVector.getX() * moveAmount;
+		float yDist = moveVector.getY() * moveAmount;
+		float zDist = moveVector.getZ() * moveAmount;
+
+		setPosition(getPosition().add(new Vector4f(xDist, yDist, zDist, 0)));
+
+		if(interpAmt != 1.f)
+		{
+			return false;
+		}
+		if(!downHeightChangeTick(deltaTime))
+		{
+			return false;
+		}
+		isMoving = false;
+		return true;
+	}
+	
+	private boolean upHeightChangeTick(float deltaTime)
+	{
+		if(!isMovingUp || heightInterpAmt == 1)
+		{
+			return true;
+		}
+		if(heightInterpAmt + (deltaTime * 4) >= 1.f)
+		{
+			heightInterpAmt = 1;
+		}
+		else
+		{
+			heightInterpAmt += (deltaTime * 4);
+		}
+		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
+		Tile curTile = map.getTileAt(currentFace, curX, curY);
+		Vector4f upDirection = curTile.getHeightOffset().sub(prevTile.getHeightOffset());
+		upDirection = upDirection.mul(heightInterpAmt);
+		setPosition(prevTile.getPosition().add(prevTile.getHeightOffset()).add(upDirection));
+		return heightInterpAmt == 1;
+	}
+	
+	private boolean downHeightChangeTick(float deltaTime)
+	{
+		if(!isMovingDown || heightInterpAmt == 1.f)
+		{
+			return true;
+		}
+		if(heightInterpAmt + (deltaTime * 4) >= 1.f)
+		{
+			heightInterpAmt = 1;
+		}
+		else
+		{
+			heightInterpAmt += (deltaTime * 4);
+		}
+		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
+		Tile curTile = map.getTileAt(currentFace, curX, curY);
+		Vector4f downDirection = curTile.getHeightOffset().sub(prevTile.getHeightOffset());
+		downDirection = downDirection.mul(1.f - heightInterpAmt);
+		setPosition(curTile.getPosition().add(curTile.getHeightOffset()).sub(downDirection));
+		return heightInterpAmt == 1;
+	}
+	
 	//returns if move is done
 	public boolean moveTick(float deltaTime)
 	{
+		if(!upHeightChangeTick(deltaTime))
+		{
+			return false;
+		}
+		if(slowMove)
+		{
+			return moveTickSlow(deltaTime);
+		}
 		float moveAmount;
-		if(interpAmt + (deltaTime) > .25f)
+		
+		
+		
+		if(interpAmt + (deltaTime) >= .25f)
 		{
 			moveAmount = .25f - interpAmt;
 			interpAmt = .25f;
-			isMoving = false;
 		}
 		else
 		{
@@ -162,7 +257,16 @@ public class Player extends Entity
 
 		setPosition(getPosition().add(new Vector4f(xDist, yDist, zDist, 0)));
 
-		return !isMoving;
+		if(interpAmt != 0.25f)
+		{
+			return false;
+		}
+		if(!downHeightChangeTick(deltaTime))
+		{
+			return false;
+		}
+		isMoving = false;
+		return true;
 	}
 
 	//initial condition: x goes along x axis, y goes along z axis
@@ -189,9 +293,7 @@ public class Player extends Entity
 		return dxdy;
 	}
 
-	//returns if successful move 
-	//move fails if it hits wall
-	public boolean move(int edge, int direction, RotationHandler r)
+	public void move(int edge, int direction, RotationHandler r)
 	{
 		lastMoveEdge = edge;
 		lastMoveDirection = direction;
@@ -202,7 +304,7 @@ public class Player extends Entity
 
 		if(thisTile == null)
 		{
-			return false;
+			return;
 		}
 
 		int dx;
@@ -217,7 +319,7 @@ public class Player extends Entity
 			nextTile = map.getNearestTile(getPosition().sub(dxdy), currentFace);
 			if(nextTile == null)
 			{
-				return false;
+				return;
 			}
 			dx = thisTile.getXIndex() - nextTile.getXIndex();
 			dy = thisTile.getYIndex() - nextTile.getYIndex();
@@ -225,10 +327,13 @@ public class Player extends Entity
 
 		if(map.wallInDirection(currentFace, curX, curY, dx, dy))
 		{
-			return false;
+			return;
+		}
+		if(thisTile.getHeight() == Tile.TILEHEIGHT_LOW && nextTile.getHeight() == Tile.TILEHEIGHT_HIGH)
+		{
+			return;
 		}
 
-		boolean failed = false;
 		int tempX = prevX;
 		int tempY = prevY;
 		prevX = curX;
@@ -244,7 +349,7 @@ public class Player extends Entity
 				prevY = tempY;
 				curX -= dx;
 				curY -= dy;
-				return false;
+				return;
 			}
 			if(map.wallOnEdge(thisTile, dx, dy))
 			{
@@ -252,27 +357,85 @@ public class Player extends Entity
 				prevY = tempY;
 				curX -= dx;
 				curY -= dy;
-				return false;
+				return;
 			}
 			switchFace(edge, direction, r);
-			return false;
+			return;
 		}
-		if(!failed)
+		isMoving = true;
+		interpAmt = 0;
+		heightInterpAmt = 0;
+		if(nextTile.getHeight() == Tile.TILEHEIGHT_HIGH && thisTile.getHeight() == Tile.TILEHEIGHT_NORMAL ||
+				nextTile.getHeight() == Tile.TILEHEIGHT_NORMAL && thisTile.getHeight() == Tile.TILEHEIGHT_LOW)
 		{
-			isMoving = true;
-			interpAmt = 0;
-			moveVector = map.getTilePosition(currentFace, curX, curY).sub(map.getTilePosition(currentFace, curX - dx, curY - dy));
+			isMovingUp = true;
 		}
-		return failed;
+		else
+		{
+			isMovingUp = false;
+		}
+		if(nextTile.getHeight() == Tile.TILEHEIGHT_LOW && thisTile.getHeight() == Tile.TILEHEIGHT_NORMAL ||
+				nextTile.getHeight() == Tile.TILEHEIGHT_NORMAL && thisTile.getHeight() == Tile.TILEHEIGHT_HIGH ||
+				nextTile.getHeight() == Tile.TILEHEIGHT_LOW && thisTile.getHeight() == Tile.TILEHEIGHT_HIGH)
+		{
+			isMovingDown = true;
+		}
+		else
+		{
+			isMovingDown = false;
+		}
+		moveVector = createMoveVector(curX, curY, curX - dx, curY - dy);
+		thisTile.getTerrain().onPlayerLeaveTile(this);
 	}
 
+	private Vector4f createMoveVector(int nextX, int nextY, int x, int y)
+	{
+		Vector4f next = map.getTilePosition(currentFace, nextX, nextY).sub(map.getTilePosition(currentFace, x, y));
+		Tile nextTile = map.getTileAt(currentFace, x, y);
+		Tile thisTile = map.getTileAt(currentFace, nextX, nextY);
+		if(nextTile.getTerrain().getTerrainType() == TerrainType.WATER && 
+				thisTile.getTerrain().getTerrainType() == TerrainType.WATER)
+		{
+			slowMove = true;
+			return next;
+		}
+		if(nextTile.getTerrain().getTerrainType() == TerrainType.WATER)
+		{
+			Vector4f upDirection = ((WaterTerrain)nextTile.getTerrain()).getWaterOffset(1);
+			upDirection.zeroW();
+			slowMove = true;
+			return next.add(upDirection);
+		}
+		if(thisTile.getTerrain().getTerrainType() == TerrainType.WATER)
+		{
+			Vector4f downDirection = ((WaterTerrain)thisTile.getTerrain()).getWaterOffset(-1);
+			downDirection.zeroW();
+			slowMove = true;
+			return next.add(downDirection);
+		}
+		slowMove = false;
+		return next;
+	}
+	
 	public void switchFace(int edge, int direction, RotationHandler r)
 	{
 		//TODO: optional to change me
 //		lastMoveDirection = -1;
 		Tile t = map.getNearestTile(currentFace, curX, curY);
 		currentFace = t.getFace();
-		this.setPosition(t.getPosition());
+		t.getTerrain().onPlayerLeaveTile(this);
+		
+		if(t.getTerrain().getTerrainType() == TerrainType.WATER)
+		{
+			Vector4f downDirection = ((WaterTerrain)t.getTerrain()).getWaterOffset(-1);
+			downDirection.zeroW();
+			setPosition(t.getPosition().add(downDirection).add(t.getHeightOffset()));
+		}
+		else
+		{
+			this.setPosition(t.getPosition().add(t.getHeightOffset()));
+		}
+		
 		if(direction == RotationHandler.MOVE_UP)
 		{
 			direction = RotationHandler.MOVE_DOWN;
@@ -314,6 +477,20 @@ public class Player extends Entity
 		return prevY;
 	}
 
+	public float getHeightInterpAmt()
+	{
+		return heightInterpAmt;
+	}
+	
+	public boolean isMovingUp()
+	{
+		return isMovingUp;
+	}
+	
+	public boolean isMovingDown()
+	{
+		return isMovingDown;
+	}
 	
 	public int getLastMoveEdge()
 	{

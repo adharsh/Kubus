@@ -39,22 +39,40 @@ public class KubusGame
 			{
 				for(int b=0;b<5;b++)
 				{
-					if(a == 2 && b == 2)
+//					if(a == 4 && b == 3)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.FIRE, kube, f, rotHandler);
+//					}
+//					else if(a == 4 && b == 2)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_HIGH, null, kube, f, rotHandler);
+//					}
+//					else if(a == 3)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
+//					}
+//					else
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
+//					}
+					double rn = Math.random();
+					if(rn < 0.3)
 					{
-						new Tile(a, b, 0, TerrainType.FIRE, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_LOW, null, kube, f, rotHandler);
 					}
-					else if(a == 4)
+					else if(rn >= 0.3 && rn < 0.6) 
 					{
-						new Tile(a, b, 0, TerrainType.ICE, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_HIGH, null, kube, f, rotHandler);
 					}
 					else
 					{
-						new Tile(a, b, 0, null, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
 					}
 				}
 			}
 		}
 		player = new Player(1, 0, 0, kube);
+		kube.addWall(kube.getTileAt(1, 3, 0), kube.getTileAt(1, 4, 0));
 		kube.addWall(kube.getTileAt(6, 4, 3));
 	}
 	
@@ -92,13 +110,19 @@ public class KubusGame
 		{
 			if(player.isMovingToNextTile())
 			{
-				if(kube.getTerrainTypeAt(player.getFace(), player.getX(), player.getY()) == TerrainType.FIRE)
+				TerrainType thisType = kube.getTerrainTypeAt(player.getFace(), player.getX(), player.getY());
+				TerrainType prevType = kube.getTerrainTypeAt(player.getFace(), player.getPrevX(), player.getPrevY());
+				if((!player.isMovingUp() && !player.isMovingDown()) ||
+						(player.isMovingDown() && player.getHeightInterpAmt() == 0 && prevType == TerrainType.FIRE))
 				{
-					kube.getTileAt(player.getFace(), player.getX(), player.getY()).getTerrain().affectPlayer(player);
-				}
-				else if(kube.getTerrainTypeAt(player.getFace(), player.getPrevX(), player.getPrevY()) == TerrainType.FIRE)
-				{
-					kube.getTileAt(player.getFace(), player.getPrevX(), player.getPrevY()).getTerrain().affectPlayer(player);
+					if(thisType == TerrainType.FIRE)
+					{
+						kube.getTileAt(player.getFace(), player.getX(), player.getY()).getTerrain().affectPlayer(player);
+					}
+					else if(prevType == TerrainType.FIRE)
+					{
+						kube.getTileAt(player.getFace(), player.getPrevX(), player.getPrevY()).getTerrain().affectPlayer(player);
+					}
 				}
 				player.moveTick(deltaTime);
 			}
@@ -106,21 +130,25 @@ public class KubusGame
 			{
 				kube.tileAffectPlayer(player, this);
 				
-				if(input.isKeyDown(KeyInput.LEFT_ARROW))
+
+				if(!player.isMovingToNextTile())
 				{
-					player.move(RotationHandler.LEFT_EDGE, RotationHandler.MOVE_DOWN, rotHandler);
-				}
-				else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
-				{
-					player.move(RotationHandler.LEFT_EDGE, RotationHandler.MOVE_UP, rotHandler);
-				}
-				else if(input.isKeyDown(KeyInput.UP_ARROW))
-				{
-					player.move(RotationHandler.RIGHT_EDGE, RotationHandler.MOVE_UP, rotHandler);
-				}
-				else if(input.isKeyDown(KeyInput.DOWN_ARROW))
-				{
-					player.move(RotationHandler.RIGHT_EDGE, RotationHandler.MOVE_DOWN, rotHandler);
+					if(input.isKeyDown(KeyInput.LEFT_ARROW))
+					{
+						player.move(RotationHandler.LEFT_EDGE, RotationHandler.MOVE_DOWN, rotHandler);
+					}
+					else if(input.isKeyDown(KeyInput.RIGHT_ARROW))
+					{
+						player.move(RotationHandler.LEFT_EDGE, RotationHandler.MOVE_UP, rotHandler);
+					}
+					else if(input.isKeyDown(KeyInput.UP_ARROW))
+					{
+						player.move(RotationHandler.RIGHT_EDGE, RotationHandler.MOVE_UP, rotHandler);
+					}
+					else if(input.isKeyDown(KeyInput.DOWN_ARROW))
+					{
+						player.move(RotationHandler.RIGHT_EDGE, RotationHandler.MOVE_DOWN, rotHandler);
+					}
 				}
 			}
 			if(gameOver)

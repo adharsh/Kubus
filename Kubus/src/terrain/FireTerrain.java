@@ -30,7 +30,7 @@ public class FireTerrain extends Terrain
 	public FireTerrain(Kube map, Tile tile)
 	{
 		this.map = map;
-		setPosition(tile.getPosition());
+		setPosition(tile.getPosition().add(tile.getHeightOffset()));
 		renderTransform.setRotation(map.getFaceRotation(tile.getFace()));
 		renderTransform.setScale(map.getTileLength(), map.getTileLength(), map.getTileLength());
 	}

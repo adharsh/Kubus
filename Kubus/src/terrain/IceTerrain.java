@@ -1,15 +1,13 @@
 package terrain;
 
-import entity.Kube;
 import entity.Player;
-import entity.Tile;
 import graphics.RotationHandler;
 
 public class IceTerrain extends Terrain
 {
 	private RotationHandler r;
 	
-	public IceTerrain(Kube map, Tile tile, RotationHandler r)
+	public IceTerrain(RotationHandler r)
 	{
 		this.r = r;
 	}

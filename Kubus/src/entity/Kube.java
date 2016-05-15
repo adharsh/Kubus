@@ -44,14 +44,14 @@ public class Kube
 	private ArrayList<Tile[]> walls;
 	private ArrayList<Tile> edgeWalls;
 	private ArrayList<TileIndex[]> cornerWalls;
-	private static Bitmap grass;
+	private static Bitmap brick;
 	static
 	{
 		wallMesh = QMFLoader.loadQMF("res/QMF/wall.qmf");
 		try {
-			grass = new Bitmap("res/brik.jpg");
+			brick = new Bitmap("res/brik.jpg");
 		} catch (IOException e) {
-			grass = new Bitmap(1, 1);
+			brick = new Bitmap(1, 1);
 			e.printStackTrace();
 		}
 	}
@@ -359,7 +359,7 @@ public class Kube
 		for(Tile[] wall : walls)
 		{
 			Vector4f pos1 = wall[0].renderTransform.getPosition(), pos2 = wall[1].renderTransform.getPosition();
-
+			
 			if(wall[0].getXIndex() == wall[1].getXIndex())
 			{
 				tf.setScale(tileLength, tileLength, 0);
@@ -372,8 +372,16 @@ public class Kube
 			tf.setRotation(getRelativeRotation(wall[0].getFace()));
 			pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 					(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+			if(wall[0].getHeight() == Tile.TILEHEIGHT_HIGH)
+			{
+				pos = pos.add(wall[0].getHeightOffset());
+			}
+			else if(wall[1].getHeight() == Tile.TILEHEIGHT_HIGH)
+			{
+				pos = pos.add(wall[1].getHeightOffset());
+			}
 			tf.setPosition(pos);
-			wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
+			wallMesh.draw(render, viewProjection, tf.getTransformation(), brick);
 		}
 
 		for(TileIndex[] wall : cornerWalls)
@@ -394,8 +402,23 @@ public class Kube
 
 			pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 					(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+			
+			Tile corner;
+			if(inBounds(wall[0]))
+			{
+				corner = getTileAt(wall[0].face, wall[0].x, wall[0].y);
+			}
+			else
+			{
+				corner = getTileAt(wall[1].face, wall[1].x, wall[1].y);
+			}
+			
+			if(corner.getHeight() == Tile.TILEHEIGHT_HIGH)
+			{
+				pos = pos.add(corner.getHeightOffset());
+			}
 			tf.setPosition(pos);
-			wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
+			wallMesh.draw(render, viewProjection, tf.getTransformation(), brick);
 		}
 
 		for(Tile t : edgeWalls)
@@ -408,8 +431,12 @@ public class Kube
 				tf.setRotation(getRelativeRotation(t.getFace()));
 				pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 						(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+				if(t.getHeight() == Tile.TILEHEIGHT_HIGH)
+				{
+					pos = pos.add(t.getHeightOffset());
+				}
 				tf.setPosition(pos);
-				wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
+				wallMesh.draw(render, viewProjection, tf.getTransformation(), brick);
 			}
 			if(t.getXIndex() == faceLength - 1)
 			{
@@ -419,8 +446,12 @@ public class Kube
 				tf.setRotation(getRelativeRotation(t.getFace()));
 				pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 						(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+				if(t.getHeight() == Tile.TILEHEIGHT_HIGH)
+				{
+					pos = pos.add(t.getHeightOffset());
+				}
 				tf.setPosition(pos);
-				wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
+				wallMesh.draw(render, viewProjection, tf.getTransformation(), brick);
 			}
 			if(t.getYIndex() == 0)
 			{
@@ -430,8 +461,12 @@ public class Kube
 				tf.setRotation(getRelativeRotation(t.getFace()));
 				pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 						(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+				if(t.getHeight() == Tile.TILEHEIGHT_HIGH)
+				{
+					pos = pos.add(t.getHeightOffset());
+				}
 				tf.setPosition(pos);
-				wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
+				wallMesh.draw(render, viewProjection, tf.getTransformation(), brick);
 			}
 			if(t.getYIndex() == faceLength - 1)
 			{
@@ -441,10 +476,19 @@ public class Kube
 				tf.setRotation(getRelativeRotation(t.getFace()));
 				pos.setXYZW((pos1.getX() + pos2.getX()) / 2.f, (pos1.getY() + pos2.getY()) / 2.f, 
 						(pos1.getZ() + pos2.getZ()) / 2.f, 1.f);
+				if(t.getHeight() == Tile.TILEHEIGHT_HIGH)
+				{
+					pos = pos.add(t.getHeightOffset());
+				}
 				tf.setPosition(pos);
-				wallMesh.draw(render, viewProjection, tf.getTransformation(), grass);
+				wallMesh.draw(render, viewProjection, tf.getTransformation(), brick);
 			}
 		}
+	}
+	
+	public boolean inBounds(TileIndex tile)
+	{
+		return (tile.x >= 0 && tile.y >= 0 && tile.x < faceLength && tile.y < faceLength);
 	}
 	
 	public void renderFaces(Renderer render, Matrix4f viewProjection)
