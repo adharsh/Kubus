@@ -51,7 +51,7 @@ public class KubusGame
 					{
 						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.SPIKES, kube, f, rotHandler);
 					}
-					else if(a == 2 && b == 2)
+					else if(a == 2)
 					{
 						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.ICE, kube, f, rotHandler);
 					}
