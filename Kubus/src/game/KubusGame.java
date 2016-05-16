@@ -47,9 +47,13 @@ public class KubusGame
 					{
 						new Tile(a, b, Tile.TILEHEIGHT_HIGH, TerrainType.WATER, kube, f, rotHandler);
 					}
-					else if(a == 3)
+					else if(a == 1 && b == 1)
 					{
 						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.SPIKES, kube, f, rotHandler);
+					}
+					else if(a == 2 && b == 2)
+					{
+						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.ICE, kube, f, rotHandler);
 					}
 					else
 					{
