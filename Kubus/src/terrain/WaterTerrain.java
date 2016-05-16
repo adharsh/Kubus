@@ -27,6 +27,7 @@ public class WaterTerrain extends Terrain
 		return TerrainType.WATER;
 	}
 
+	@Override
 	public Vector4f getWaterOffset(int direction)
 	{
 		return getUpDirection().mul(direction * (map.getTileLength() / 8));

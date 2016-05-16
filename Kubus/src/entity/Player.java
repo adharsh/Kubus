@@ -29,20 +29,22 @@ public class Player extends Entity
 	private int prevX, prevY;
 	private static Bitmap playerTexture;
 
-		private float heightInterpAmt;
+		private float climbHeightInterpAmt;
+		private float fallHeightInterpAmt;
 		private boolean isMovingUp;
+		private boolean isClimbingOutOfWater;
 		private boolean isMovingDown;
+		private boolean isFallingIntoWater;
 	
 		private boolean dying;
 		private float deathInterpAmt;
 		//1 second to die
 	
 		private boolean isMoving;
-		//vector which describes move at inception
-		private Vector4f moveVector;
 		private float interpAmt;
-		private boolean slowMove;
-		//.25 seconds to move
+		private Vector4f currentHeightOffset;
+		private float moveTime;
+		//move time in seconds (can be slowed)
 
 	static
 	{
@@ -72,7 +74,7 @@ public class Player extends Entity
 		prevY = curY;
 		lastMoveDirection = -1;
 		setPosition(map.getTilePosition(startFace, startX, startY));
-
+		currentHeightOffset = new Vector4f(0, 0, 0, 0);
 		renderTransform.setScale(map.getTileLength(), map.getTileLength(), map.getTileLength());
 	}
 
@@ -149,26 +151,94 @@ public class Player extends Entity
 	{
 		return isMoving;
 	}
-
-	private boolean moveTickSlow(float deltaTime)
+	
+	private boolean upHeightChangeTick(float deltaTime)
 	{
-		float moveAmount;
-		
-		if(interpAmt + (deltaTime) > 1.f)
+		if((!isMovingUp && !isClimbingOutOfWater) || climbHeightInterpAmt == 1)
 		{
-			moveAmount = 1.f - interpAmt;
+			return true;
+		}
+		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
+		Tile curTile = map.getTileAt(currentFace, curX, curY);
+		Vector4f deltaMove = new Vector4f(0, 0, 0, 0);
+		if(isClimbingOutOfWater)
+		{
+			deltaMove = deltaMove.add(prevTile.getTerrain().getWaterOffset(1));
+		}
+		if(isMovingUp)
+		{
+			deltaMove = deltaMove.add(curTile.getHeightOffset().sub(prevTile.getHeightOffset()));
+		}
+		if(climbHeightInterpAmt + (deltaTime * 4) >= 1.f)
+		{
+			climbHeightInterpAmt = 1;
+			currentHeightOffset = deltaMove.add(prevTile.getHeightOffset().add(prevTile.getTerrain().getWaterOffset(-1)));
+		}
+		else
+		{
+			climbHeightInterpAmt += (deltaTime * 4);
+		}
+		deltaMove = deltaMove.mul(climbHeightInterpAmt);
+		setPosition(prevTile.getPosition().add(prevTile.getHeightOffset()
+				.add(prevTile.getTerrain().getWaterOffset(-1))).add(deltaMove));
+		return climbHeightInterpAmt == 1;
+	}
+	
+	private boolean downHeightChangeTick(float deltaTime)
+	{
+		if((!isMovingDown && !isFallingIntoWater) || fallHeightInterpAmt == 1.f)
+		{
+			return true;
+		}
+		if(fallHeightInterpAmt + (deltaTime * 4) >= 1.f)
+		{
+			fallHeightInterpAmt = 1;
+		}
+		else
+		{
+			fallHeightInterpAmt += (deltaTime * 4);
+		}
+		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
+		Tile curTile = map.getTileAt(currentFace, curX, curY);
+		Vector4f deltaMove = new Vector4f(0, 0, 0, 0);
+		if(isFallingIntoWater)
+		{
+			deltaMove = deltaMove.add(curTile.getTerrain().getWaterOffset(-1));
+		}
+		if(isMovingDown)
+		{
+			deltaMove = deltaMove.add(curTile.getHeightOffset().sub(prevTile.getHeightOffset()));
+		}
+		deltaMove = deltaMove.mul(1.f - fallHeightInterpAmt);
+		setPosition(curTile.getPosition().add(curTile.getHeightOffset().add(curTile.getTerrain().getWaterOffset(-1))).sub(deltaMove));
+		return fallHeightInterpAmt == 1;
+	}
+	
+	//returns if move is done
+	public boolean moveTick(float deltaTime)
+	{
+		if(!upHeightChangeTick(deltaTime))
+		{
+			return false;
+		}
+		
+		if(interpAmt + (deltaTime / moveTime) >= 1.f)
+		{
 			interpAmt = 1.f;
 		}
 		else
 		{
-			moveAmount = (deltaTime);
-			interpAmt += moveAmount;
+			interpAmt += (deltaTime / moveTime);
 		}
-		float xDist = moveVector.getX() * moveAmount;
-		float yDist = moveVector.getY() * moveAmount;
-		float zDist = moveVector.getZ() * moveAmount;
 
-		setPosition(getPosition().add(new Vector4f(xDist, yDist, zDist, 0)));
+		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
+		Tile curTile = map.getTileAt(currentFace, curX, curY);
+		
+		Vector4f deltaPos = curTile.getPosition()
+				.sub(prevTile.getPosition())
+				.mul(interpAmt);
+		
+		setPosition(deltaPos.add(prevTile.getPosition().add(currentHeightOffset)));
 
 		if(interpAmt != 1.f)
 		{
@@ -179,93 +249,12 @@ public class Player extends Entity
 			return false;
 		}
 		isMoving = false;
-		return true;
-	}
-	
-	private boolean upHeightChangeTick(float deltaTime)
-	{
-		if(!isMovingUp || heightInterpAmt == 1)
+		if(map.getTileAt(currentFace, curX, curY).getHeight() == Tile.TILEHEIGHT_LOW &&
+				map.getTileAt(currentFace, prevX, prevY).getHeight() == Tile.TILEHEIGHT_HIGH &&
+				!isFallingIntoWater)
 		{
-			return true;
+			this.takeHealth(25);
 		}
-		if(heightInterpAmt + (deltaTime * 4) >= 1.f)
-		{
-			heightInterpAmt = 1;
-		}
-		else
-		{
-			heightInterpAmt += (deltaTime * 4);
-		}
-		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
-		Tile curTile = map.getTileAt(currentFace, curX, curY);
-		Vector4f upDirection = curTile.getHeightOffset().sub(prevTile.getHeightOffset());
-		upDirection = upDirection.mul(heightInterpAmt);
-		setPosition(prevTile.getPosition().add(prevTile.getHeightOffset()).add(upDirection));
-		return heightInterpAmt == 1;
-	}
-	
-	private boolean downHeightChangeTick(float deltaTime)
-	{
-		if(!isMovingDown || heightInterpAmt == 1.f)
-		{
-			return true;
-		}
-		if(heightInterpAmt + (deltaTime * 4) >= 1.f)
-		{
-			heightInterpAmt = 1;
-		}
-		else
-		{
-			heightInterpAmt += (deltaTime * 4);
-		}
-		Tile prevTile = map.getTileAt(currentFace, prevX, prevY);
-		Tile curTile = map.getTileAt(currentFace, curX, curY);
-		Vector4f downDirection = curTile.getHeightOffset().sub(prevTile.getHeightOffset());
-		downDirection = downDirection.mul(1.f - heightInterpAmt);
-		setPosition(curTile.getPosition().add(curTile.getHeightOffset()).sub(downDirection));
-		return heightInterpAmt == 1;
-	}
-	
-	//returns if move is done
-	public boolean moveTick(float deltaTime)
-	{
-		if(!upHeightChangeTick(deltaTime))
-		{
-			return false;
-		}
-		if(slowMove)
-		{
-			return moveTickSlow(deltaTime);
-		}
-		float moveAmount;
-		
-		
-		
-		if(interpAmt + (deltaTime) >= .25f)
-		{
-			moveAmount = .25f - interpAmt;
-			interpAmt = .25f;
-		}
-		else
-		{
-			moveAmount = (deltaTime);
-			interpAmt += moveAmount;
-		}
-		float xDist = moveVector.getX() * moveAmount * 4;
-		float yDist = moveVector.getY() * moveAmount * 4;
-		float zDist = moveVector.getZ() * moveAmount * 4;
-
-		setPosition(getPosition().add(new Vector4f(xDist, yDist, zDist, 0)));
-
-		if(interpAmt != 0.25f)
-		{
-			return false;
-		}
-		if(!downHeightChangeTick(deltaTime))
-		{
-			return false;
-		}
-		isMoving = false;
 		return true;
 	}
 
@@ -299,13 +288,9 @@ public class Player extends Entity
 		lastMoveDirection = direction;
 		Vector4f dxdy = getDXDY(edge, direction, r);
 
-		Tile thisTile = map.getNearestTile(getPosition(), currentFace);
-		Tile nextTile = map.getNearestTile(getPosition().add(dxdy), currentFace);
+		Tile thisTile = map.getTileAt(currentFace, curX, curY);
+		Tile nextTile = map.getNearestTile(thisTile.getPosition().add(dxdy), currentFace);
 
-		if(thisTile == null)
-		{
-			return;
-		}
 
 		int dx;
 		int dy;
@@ -364,57 +349,77 @@ public class Player extends Entity
 		}
 		isMoving = true;
 		interpAmt = 0;
-		heightInterpAmt = 0;
-		if(nextTile.getHeight() == Tile.TILEHEIGHT_HIGH && thisTile.getHeight() == Tile.TILEHEIGHT_NORMAL ||
-				nextTile.getHeight() == Tile.TILEHEIGHT_NORMAL && thisTile.getHeight() == Tile.TILEHEIGHT_LOW)
+		climbHeightInterpAmt = 0;
+		fallHeightInterpAmt = 0;
+		generateHeightChangeInfo(thisTile, nextTile);
+		if(thisTile.getTerrain().getTerrainType() == TerrainType.WATER ||
+				nextTile.getTerrain().getTerrainType() == TerrainType.WATER)
+		{
+			moveTime = 1.f;
+		}
+		else
+		{
+			moveTime = 0.25f;
+		}
+			currentHeightOffset = thisTile.getTerrain().getWaterOffset(-1);
+	//	}
+		thisTile.getTerrain().onPlayerLeaveTile(this);
+	}
+	
+	private void generateHeightChangeInfo(Tile thisTile, Tile nextTile)
+	{
+		int nth = nextTile.getHeight();
+		int tth = thisTile.getHeight();
+		boolean ttw = thisTile.getTerrain().getTerrainType() == TerrainType.WATER;
+		boolean ntw = nextTile.getTerrain().getTerrainType() == TerrainType.WATER;
+		
+		
+		if(nth > tth)
 		{
 			isMovingUp = true;
+			isMovingDown = false;
+		}
+		else if(nth == tth)
+		{
+			isMovingUp = false;
+			isMovingDown = false;
 		}
 		else
 		{
 			isMovingUp = false;
-		}
-		if(nextTile.getHeight() == Tile.TILEHEIGHT_LOW && thisTile.getHeight() == Tile.TILEHEIGHT_NORMAL ||
-				nextTile.getHeight() == Tile.TILEHEIGHT_NORMAL && thisTile.getHeight() == Tile.TILEHEIGHT_HIGH ||
-				nextTile.getHeight() == Tile.TILEHEIGHT_LOW && thisTile.getHeight() == Tile.TILEHEIGHT_HIGH)
-		{
 			isMovingDown = true;
+		}
+		
+		if(ttw && !ntw)
+		{
+			isClimbingOutOfWater = true;
+			isFallingIntoWater = false;
+		}
+		else if(!ttw && ntw)
+		{
+			isClimbingOutOfWater = false;
+			isFallingIntoWater = true;
+		}
+		else if(ttw && ntw)
+		{
+			if(isMovingDown || isMovingUp)
+			{
+				isClimbingOutOfWater = true;
+				isFallingIntoWater = true;
+			}
+			else
+			{
+				isClimbingOutOfWater = false;
+				isFallingIntoWater = false;
+			}
 		}
 		else
 		{
-			isMovingDown = false;
+			isClimbingOutOfWater = false;
+			isFallingIntoWater = false;
 		}
-		moveVector = createMoveVector(curX, curY, curX - dx, curY - dy);
-		thisTile.getTerrain().onPlayerLeaveTile(this);
-	}
-
-	private Vector4f createMoveVector(int nextX, int nextY, int x, int y)
-	{
-		Vector4f next = map.getTilePosition(currentFace, nextX, nextY).sub(map.getTilePosition(currentFace, x, y));
-		Tile nextTile = map.getTileAt(currentFace, x, y);
-		Tile thisTile = map.getTileAt(currentFace, nextX, nextY);
-		if(nextTile.getTerrain().getTerrainType() == TerrainType.WATER && 
-				thisTile.getTerrain().getTerrainType() == TerrainType.WATER)
-		{
-			slowMove = true;
-			return next;
-		}
-		if(nextTile.getTerrain().getTerrainType() == TerrainType.WATER)
-		{
-			Vector4f upDirection = ((WaterTerrain)nextTile.getTerrain()).getWaterOffset(1);
-			upDirection.zeroW();
-			slowMove = true;
-			return next.add(upDirection);
-		}
-		if(thisTile.getTerrain().getTerrainType() == TerrainType.WATER)
-		{
-			Vector4f downDirection = ((WaterTerrain)thisTile.getTerrain()).getWaterOffset(-1);
-			downDirection.zeroW();
-			slowMove = true;
-			return next.add(downDirection);
-		}
-		slowMove = false;
-		return next;
+		
+		
 	}
 	
 	public void switchFace(int edge, int direction, RotationHandler r)
@@ -477,9 +482,14 @@ public class Player extends Entity
 		return prevY;
 	}
 
-	public float getHeightInterpAmt()
+	public float getClimbHeightInterpAmt()
 	{
-		return heightInterpAmt;
+		return climbHeightInterpAmt;
+	}
+	
+	public float getFallHeightInterpAmt()
+	{
+		return fallHeightInterpAmt;
 	}
 	
 	public boolean isMovingUp()

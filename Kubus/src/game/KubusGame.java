@@ -45,11 +45,11 @@ public class KubusGame
 					}
 					else if(a == 4 && b == 2)
 					{
-						new Tile(a, b, Tile.TILEHEIGHT_HIGH, null, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_HIGH, TerrainType.WATER, kube, f, rotHandler);
 					}
 					else if(a == 3)
 					{
-						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.SPIKES, kube, f, rotHandler);
 					}
 					else
 					{
@@ -99,8 +99,9 @@ public class KubusGame
 			{
 				TerrainType thisType = kube.getTerrainTypeAt(player.getFace(), player.getX(), player.getY());
 				TerrainType prevType = kube.getTerrainTypeAt(player.getFace(), player.getPrevX(), player.getPrevY());
+				//TODO: test,e
 				if((!player.isMovingUp() && !player.isMovingDown()) ||
-						(player.isMovingDown() && player.getHeightInterpAmt() == 0 && prevType == TerrainType.FIRE))
+						(player.isMovingDown() && player.getFallHeightInterpAmt() == 0 && prevType == TerrainType.FIRE))
 				{
 					if(thisType == TerrainType.FIRE)
 					{
