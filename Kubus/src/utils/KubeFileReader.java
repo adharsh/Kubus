@@ -8,11 +8,8 @@ import graphics.RotationHandler;
 import graphics.Vector4f;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-import terrain.Terrain;
 
 public class KubeFileReader 
 {
