@@ -9,6 +9,10 @@ public class Camera
 	private Matrix4f rotation;
 	private Vector4f fwd;
 	private Vector4f axis;
+	
+	private Vector4f axisSave;
+	private Vector4f fwdSave;
+	private Vector4f positionSave;
 
 	public Camera(Matrix4f projection)
 	{
@@ -65,6 +69,15 @@ public class Camera
 	
 	public float spinAroundPoint(Vector4f point, Vector4f axis, float angle, float interp, float amt)
 	{
+		if(interp == 0)
+		{
+			axisSave = new Vector4f(this.axis);
+			axisSave.zeroW();
+			fwdSave = new Vector4f(this.fwd);
+			fwdSave.zeroW();
+			positionSave = new Vector4f(this.position);
+			positionSave.zeroW();
+		}
 		if(Math.abs(interp) >= Math.abs(amt))
 		{
 			interp = amt;
@@ -79,19 +92,19 @@ public class Camera
 		{
 			interp += angle;
 		}
-		Vector4f diffVec = position.sub(point);
-		diffVec.fixW();
-		fwd = fwd.rotate(axis, angle);
-		this.axis = this.axis.rotate(axis, angle);
+		Vector4f diffVec = positionSave.sub(point);
+		diffVec.zeroW();
+		fwd = fwdSave.rotate(axis, interp);
+		this.axis = axisSave.rotate(axis, interp);
 		rotation.initRotation(fwd, this.axis);
-		diffVec = diffVec.rotate(axis, angle);
+		diffVec = diffVec.rotate(axis, interp);
 		position = point.add(diffVec);
 		if(interp == amt)//roundoff
 		{
 			position.setXYZW(Math.round(position.getX() * 10.f) / 10.f, Math.round(position.getY() * 10.f) / 10.f, Math.round(position.getZ() * 10.f) / 10.f, 0);
 			fwd = position.mul(-1).normalized();
 			fwd.fixW();
-			
+			this.axis = axisSave.rotate(axis, amt);
 			rotation.initRotation(fwd, this.axis);
 		}
 		return interp;
