@@ -33,7 +33,6 @@ public class Kube
 	public static final int LEFT = 5;
 	public static final int RIGHT = 6;
 	
-
 	private float tileLength;
 	//try 10x10 faces
 	private int faceLength;
