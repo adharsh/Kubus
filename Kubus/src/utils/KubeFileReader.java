@@ -13,7 +13,6 @@ import terrain.Terrain;
 
 public class KubeFileReader 
 {
-
 	private final static String end = "</end>";
 	private final static String ki = "<KubeInitializer>";
 	private final static String psi = "<PlayerStartIndex>";
