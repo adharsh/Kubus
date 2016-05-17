@@ -1,8 +1,9 @@
 package utils;
 
-import entity.Kube;
-import graphics.RotationHandler;
 import terrain.TerrainType;
+import entity.Kube;
+import graphics.Camera;
+import graphics.RotationHandler;
 
 public class Assets 
 {
@@ -12,6 +13,7 @@ public class Assets
 	private float tileSize;
 	private Kube.TileIndex goal; 
 	private RotationHandler rotationHandler;
+	private Camera camera;
 	
 	public static final TerrainType[] terrains = //including those that aren't used
 		{
@@ -22,6 +24,16 @@ public class Assets
 			TerrainType.ICE
 		}; 
 	
+	public Camera getCamera() 
+	{
+		return camera;
+	}
+
+	public void setCamera(Camera camera) 
+	{
+		this.camera = camera;
+	}
+
 	public TerrainType[] getTerrains() {
 		return terrains;
 	}

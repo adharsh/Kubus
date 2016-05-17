@@ -2,6 +2,9 @@ package utils;
 
 import entity.Kube;
 import entity.Tile;
+import graphics.Camera;
+import graphics.Matrix4f;
+import graphics.RotationHandler;
 import graphics.Vector4f;
 
 import java.io.BufferedReader;
@@ -77,9 +80,14 @@ public class KubeFileReader
 		
 		
 		//********************Rotation Handler for each Tile???
-		
+
 		if(	line.indexOf(t) != -1)
 		{
+			asset.setCamera(new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), 1.0f, 
+					0.1f, 1000.f)));
+			asset.getCamera().setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
+			asset.setRotationHandler(new RotationHandler(asset.getCamera()));
+			
 			startIndex = t.length();
 			line = line.substring(startIndex, line.indexOf(end)).trim();
 			data = retrieveData(line);
@@ -108,21 +116,20 @@ public class KubeFileReader
 			
 			Kube kube = asset.getKube();
 			
-			int SAM_LOOK_AT_THIS_FACE = 0;
-			if(data.length == 4)
+			if(data.length == 5)
 				kube.addWall
 				(
-					new Kube.TileIndex(data[0], data[1], SAM_LOOK_AT_THIS_FACE), 
-					new Kube.TileIndex(data[1], data[2], SAM_LOOK_AT_THIS_FACE)
+					new Kube.TileIndex(data[0], data[1], data[4]), 
+					new Kube.TileIndex(data[2], data[3], data[4])
 				);
-			else if(data.length == 2)
+			else if(data.length == 3)
 				asset.getKube().addWall(
-						null
+						asset.getKube().getTileAt(data[0], data[1], data[2])
 						);
 			else
 				kube.addWall(
-						asset.getKube().getTileAt(SAM_LOOK_AT_THIS_FACE, data[0], data[1]),
-						asset.getKube().getTileAt(SAM_LOOK_AT_THIS_FACE, data[2], data[3])
+						asset.getKube().getTileAt(data[2], data[0], data[1]),
+						asset.getKube().getTileAt(data[5], data[3], data[4])
 						);
 			
 			return;
@@ -134,7 +141,6 @@ public class KubeFileReader
 	{
 		
 		//create kube first in file
-		File file;
 		BufferedReader br;
 		Assets asset = new Assets();
 		String line = "";
@@ -145,7 +151,7 @@ public class KubeFileReader
 		{
 			processLine( line, asset );
 		}
-
+		br.close();
 		return asset;
 	}
 
