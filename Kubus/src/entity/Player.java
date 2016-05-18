@@ -29,6 +29,8 @@ public class Player extends Entity
 	private int prevX, prevY;
 	private static Bitmap playerTexture;
 	
+	private boolean hasWon;
+	
 		private float climbHeightInterpAmt;
 		private float fallHeightInterpAmt;
 		private boolean isMovingUp;
@@ -59,10 +61,12 @@ public class Player extends Entity
 		{
 			playerTexture = new Bitmap(1, 1);
 		}
+		
 	}
 
 	public Player(int startFace, int startX, int startY, Kube map) 
 	{
+		hasWon = false;
 		isMovingUp = false;
 		isMovingDown = false;
 		health = MAX_HEALTH;
@@ -510,5 +514,15 @@ public class Player extends Entity
 	public int getLastMoveDirection() 
 	{
 		return lastMoveDirection;
+	}
+	
+	public boolean getWon()
+	{
+		return hasWon;
+	}
+	
+	public boolean setWon()
+	{
+		return hasWon;
 	}
 }

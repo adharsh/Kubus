@@ -101,6 +101,8 @@ public class KubusGame
 
 	public void runGameLogic(float deltaTime)
 	{
+		if(player.getWon()) System.exit(1);
+		
 		if(rotHandler.isRunning())
 		{
 			rotHandler.rotate(deltaTime);
