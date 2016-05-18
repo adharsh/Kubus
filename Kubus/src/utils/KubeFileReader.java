@@ -88,15 +88,6 @@ public class KubeFileReader
 			return;
 		}
 
-		if(	line.indexOf(g) != -1)
-		{
-			startIndex = g.length();
-			line = line.substring(startIndex, line.indexOf(end)).trim();
-			data = retrieveData(line);
-			asset.setGoal(new Kube.TileIndex(data[0], data[1], data[2]));
-			return;
-		}
-
 
 		//********************Rotation Handler for each Tile???
 
@@ -106,13 +97,13 @@ public class KubeFileReader
 			startIndex = t.length();
 			line = line.substring(startIndex, line.indexOf(end)).trim();
 			data = retrieveData(line);
-			Tile t = asset.getKube().getTileAt(data[4], data[0], data[1]);
-			if(t == null)
+			Tile tile = asset.getKube().getTileAt(data[4], data[0], data[1]);
+			if(tile == null)
 			{
 				return;
 			}
-			t.setTerrain(Assets.terrains[data[3]]);
-			t.setHeight(data[2]);
+			tile.setTerrain(Assets.terrains[data[3]]);
+			tile.setHeight(data[2]);
 
 			return;
 		}
@@ -122,7 +113,12 @@ public class KubeFileReader
 			startIndex = g.length();
 			line = line.substring(startIndex, line.indexOf(end)).trim();
 			data = retrieveData(line);
-			asset.setGoal(new Kube.TileIndex(data[0], data[1], data[3]));
+			Tile tile = asset.getKube().getTileAt(data[2], data[0], data[1]);
+			if(tile == null)
+			{
+				return;
+			}
+			tile.setTerrain(TerrainType.GOAL);
 			return;
 		}
 

@@ -11,7 +11,6 @@ public class Assets
 	private Kube.TileIndex playerStartIndex;
 	private int cubeFace;
 	private float tileSize;
-	private Kube.TileIndex goal; 
 	private RotationHandler rotationHandler;
 	private Camera camera;
 	
@@ -76,16 +75,6 @@ public class Assets
 	public void setTileSize(float tileSize) 
 	{
 		this.tileSize = tileSize;
-	}
-	
-	public Kube.TileIndex getGoal() 
-	{
-		return goal;
-	}
-
-	public void setGoal(Kube.TileIndex goal) 
-	{
-		this.goal = goal;
 	}
 	
 	public RotationHandler getRotationHandler() 

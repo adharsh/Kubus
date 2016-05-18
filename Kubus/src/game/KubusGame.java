@@ -1,7 +1,5 @@
 package game;
 
-import java.io.IOException;
-
 import entity.Kube;
 import entity.Player;
 import graphics.Camera;
@@ -22,9 +20,11 @@ public class KubusGame
 	private Player player;
 	private Kube kube;
 	private boolean gameOver;
+	private Assets currentAsset;
 	
 	public void loadAssets(Assets a)
 	{
+		currentAsset = a;
 		gameOver = false;
 		kube = a.getKube();
 		camera = a.getCamera();
@@ -98,10 +98,35 @@ public class KubusGame
 		//rect x bounds [100, 700]
 		render.drawRectangle(100, 820, (int)((player.getHealth() / Player.MAX_HEALTH) * 700), 30, 0x0000FF);
 	}
+	
+	private int curMap = 0;
+	
+	public void nextMap()
+	{
+		curMap++;
+		switch(curMap)
+		{
+		case 1:
+			{
+				//change map here
+//
+
+				System.out.println("you win the entire game");
+				System.exit(1);
+			}
+			break;	
+		default:
+			System.out.println("you win the entire game");
+			System.exit(1);
+		}
+	}
 
 	public void runGameLogic(float deltaTime)
 	{
-		if(player.getWon()) System.exit(1);
+		if(player.getWon())
+		{
+			nextMap();
+		}
 		
 		if(rotHandler.isRunning())
 		{
@@ -112,8 +137,7 @@ public class KubusGame
 			player.dieTick(deltaTime);
 			if(!player.isDying())
 			{
-				System.out.println("you lose");
-				System.exit(0);
+				loadAssets(currentAsset);
 			}
 		}
 		else
@@ -122,7 +146,7 @@ public class KubusGame
 			{
 				TerrainType thisType = kube.getTerrainTypeAt(player.getFace(), player.getX(), player.getY());
 				TerrainType prevType = kube.getTerrainTypeAt(player.getFace(), player.getPrevX(), player.getPrevY());
-				//TODO: test,e
+				
 				if((!player.isMovingUp() && !player.isMovingDown()) ||
 						(player.isMovingDown() && player.getFallHeightInterpAmt() == 0 && prevType == TerrainType.FIRE))
 				{

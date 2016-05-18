@@ -521,8 +521,8 @@ public class Player extends Entity
 		return hasWon;
 	}
 	
-	public boolean setWon()
+	public void setWon(boolean won)
 	{
-		return hasWon;
+		hasWon = won;
 	}
 }

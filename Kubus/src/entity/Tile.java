@@ -11,6 +11,7 @@ import input.QMFLoader;
 import java.io.IOException;
 
 import terrain.FireTerrain;
+import terrain.GoalTerrain;
 import terrain.IceTerrain;
 import terrain.NoTerrain;
 import terrain.SpikeTerrain;
@@ -41,6 +42,8 @@ public class Tile extends Entity
 	public static Bitmap heightTexture;
 	public static Bitmap waterHeightTexture;
 	public static Bitmap iceHeightTexture;
+	public static Bitmap goalTexture;
+	public static Bitmap goalHeightTexture;
 	
 	
 	static
@@ -83,7 +86,7 @@ public class Tile extends Entity
 		}
 		catch(IOException e) 
 		{
-			waterTexture = new Bitmap(1, 1);
+			heightTexture = new Bitmap(1, 1);
 		}
 		
 		try 
@@ -92,7 +95,7 @@ public class Tile extends Entity
 		}
 		catch(IOException e) 
 		{
-			waterTexture = new Bitmap(1, 1);
+			waterHeightTexture = new Bitmap(1, 1);
 		}
 		
 		try 
@@ -101,7 +104,25 @@ public class Tile extends Entity
 		}
 		catch(IOException e) 
 		{
-			waterTexture = new Bitmap(1, 1);
+			iceHeightTexture = new Bitmap(1, 1);
+		}
+		
+		try 
+		{
+			goalTexture = new Bitmap("res/goal.png");
+		}
+		catch(IOException e) 
+		{
+			goalTexture = new Bitmap(1, 1);
+		}
+		
+		try 
+		{
+			goalHeightTexture = new Bitmap("res/goalheight.png");
+		}
+		catch(IOException e) 
+		{
+			goalHeightTexture = new Bitmap(1, 1);
 		}
 	}
 	
@@ -149,6 +170,8 @@ public class Tile extends Entity
 			return new IceTerrain(r);
 		case WATER:
 			return new WaterTerrain(cubeMap, this);
+		case GOAL:
+			return new GoalTerrain(cubeMap, this);
 		default:
 			return new NoTerrain();
 			
@@ -182,6 +205,17 @@ public class Tile extends Entity
 				texture = waterHeightTexture;
 			}
 		}
+		else if(terrain.getTerrainType() == TerrainType.GOAL)
+		{
+			if(tileHeight == Tile.TILEHEIGHT_NORMAL)
+			{
+				texture = goalTexture;
+			}
+			else
+			{
+				texture = goalHeightTexture;
+			}
+		}
 		else
 		{
 			if(tileHeight == Tile.TILEHEIGHT_NORMAL)
@@ -193,6 +227,7 @@ public class Tile extends Entity
 				texture = heightTexture;
 			}
 		}
+		
 		switch(tileHeight)
 		{
 		case Tile.TILEHEIGHT_NORMAL:
