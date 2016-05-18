@@ -53,7 +53,7 @@ public class KubusGame
 					}
 					else if(a == 2)
 					{
-						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.ICE, kube, f, rotHandler);
+						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.ICE, kube, f, rotHandler);
 					}
 					else
 					{
@@ -63,7 +63,7 @@ public class KubusGame
 			}
 		}
 		player = new Player(1, 0, 0, kube);
-		kube.addWall(kube.getTileAt(1, 3, 0), kube.getTileAt(1, 4, 0));
+		kube.addWall(kube.getTileAt(1, 2, 0), kube.getTileAt(1, 3, 0));
 		kube.addWall(kube.getTileAt(6, 4, 3));
 	}
 	

@@ -1,7 +1,5 @@
 package entity;
 
-import java.io.IOException;
-
 import graphics.Bitmap;
 import graphics.Matrix4f;
 import graphics.Mesh;
@@ -9,6 +7,9 @@ import graphics.Renderer;
 import graphics.RotationHandler;
 import graphics.Vector4f;
 import input.QMFLoader;
+
+import java.io.IOException;
+
 import terrain.FireTerrain;
 import terrain.IceTerrain;
 import terrain.NoTerrain;
@@ -29,6 +30,7 @@ public class Tile extends Entity
 	private int tileXIndex;
 	private int tileYIndex;
 	private int face;
+	private RotationHandler rotHandler;
 
 	private static final Mesh normalTileMesh;
 	private static final Mesh lowTileMesh;
@@ -128,6 +130,7 @@ public class Tile extends Entity
 		setPosition(cube.getTilePosition(face, xIndex, yIndex));
 
 		this.terrain = createTerrain(terrain, r);
+		rotHandler = r;
 	}
 	
 	private Terrain createTerrain(TerrainType type, RotationHandler r)
@@ -213,6 +216,11 @@ public class Tile extends Entity
 	public void setTerrain(Terrain terrain)
 	{
 		this.terrain = terrain;
+	}
+	
+	public void setTerrain(TerrainType terrain)
+	{
+		this.terrain = this.createTerrain(terrain, rotHandler);
 	}
 	
 	public void setHeight(int height)
