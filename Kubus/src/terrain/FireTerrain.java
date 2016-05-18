@@ -33,7 +33,7 @@ public class FireTerrain extends Terrain
 		setPosition(tile.getPosition().add(tile.getHeightOffset()));
 		renderTransform.setRotation(map.getFaceRotation(tile.getFace()));
 		renderTransform.setScale(map.getTileLength(), map.getTileLength(), map.getTileLength());
-	}
+	}	
 
 	@Override
 	public TerrainType getTerrainType()

@@ -28,7 +28,7 @@ public class Player extends Entity
 	private int curX, curY;
 	private int prevX, prevY;
 	private static Bitmap playerTexture;
-
+	
 		private float climbHeightInterpAmt;
 		private float fallHeightInterpAmt;
 		private boolean isMovingUp;
