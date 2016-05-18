@@ -5,4 +5,4 @@
 
 <Wall> 0,0,-1,0,1 </end>					//x1,y1,x2,y2,face -> corner
 <Wall> 1,2,1 </end>						//x,y,face -> all ints -> Not A Corner
-<Wall> 0,0,1,0,0,1 </end>				//x1,y1,face,x2,y2,face between 2 tiles on 1 face
+<Wall> 0,0,1,1,0,1 </end>				//x1,y1,face,x2,y2,face between 2 tiles on 1 face

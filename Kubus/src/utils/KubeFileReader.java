@@ -1,12 +1,9 @@
 package utils;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 
 import terrain.TerrainType;
-
 import entity.Kube;
 import entity.Tile;
 import graphics.Camera;
@@ -76,7 +73,7 @@ public class KubeFileReader
 			float dist = (float)data[0] * tileSize;
 
 			asset.getCamera().setPosition(new Vector4f(dist, dist, dist, 1));
-			for(int f=1;f<6;f++)
+			for(int f=1;f<=6;f++)
 			{
 				for(int a=0;a<data[0];a++)
 				{
@@ -190,10 +187,10 @@ public class KubeFileReader
 		return asset;
 	}
 
-	public static void main(String[] args) 
-	{
-		readFile("res/maps/lol.mp");
-	}
+//	public static void main(String[] args) 
+//	{
+//		readFile("res/maps/lol.mp");
+//	}
 
 }
 
