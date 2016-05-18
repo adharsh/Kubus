@@ -12,7 +12,6 @@ import graphics.Camera;
 import graphics.Matrix4f;
 import graphics.RotationHandler;
 import graphics.Vector4f;
-
 public class KubeFileReader 
 {
 	private final static String end = "</end>";

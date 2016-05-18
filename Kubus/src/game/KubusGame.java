@@ -1,5 +1,7 @@
 package game;
 
+import java.io.IOException;
+
 import entity.Kube;
 import entity.Player;
 import entity.Tile;
@@ -11,6 +13,8 @@ import graphics.RotationHandler;
 import graphics.Vector4f;
 import input.KeyInput;
 import terrain.TerrainType;
+import utils.Assets;
+import utils.KubeFileReader;
 
 public class KubusGame 
 {
@@ -21,57 +25,72 @@ public class KubusGame
 	private Kube kube;
 	private boolean gameOver;
 	
+	public void loadAssets(Assets a)
+	{
+		gameOver = false;
+		kube = a.getKube();
+		camera = a.getCamera();
+		player = new Player(Kube.TOP, a.getPlayerStartIndex().x, a.getPlayerStartIndex().y, kube);
+		rotHandler = a.getRotationHandler();
+	}
+
 	public KubusGame(Display display)
 	{
+		Assets a = null;
+		try {	a = KubeFileReader.readFile("res/maps/lol.mp");	} catch (IOException e) {	}
+		
+		loadAssets(a);
+		
 		input = new KeyInput();
 		display.addKeyListener(input);
-		//temporary:
-		kube = new Kube(5, 0.3f);
-
-		camera = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), (float)display.getWidth() / (float)display.getHeight(), 
-				0.1f, 1000.f));
-		camera.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
-		camera.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
-		rotHandler = new RotationHandler(camera);
-		for(int f=1;f<=6;f++)
-		{
-			for(int a=0;a<5;a++)
-			{
-				for(int b=0;b<5;b++)
-				{
-					if(a == 4 && b == 3)
-					{
-						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.FIRE, kube, f, rotHandler);
-					}
-					else if(a == 4 && b == 2)
-					{
-						new Tile(a, b, Tile.TILEHEIGHT_HIGH, TerrainType.WATER, kube, f, rotHandler);
-					}
-					else if(a == 1 && b == 1)
-					{
-						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.SPIKES, kube, f, rotHandler);
-					}
-					else if(a == 2)
-					{
-						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.ICE, kube, f, rotHandler);
-					}
-					else
-					{
-						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
-					}
-				}
-			}
-		}
-		player = new Player(1, 0, 0, kube);
-		kube.addWall(kube.getTileAt(1, 2, 0), kube.getTileAt(1, 3, 0));
-		kube.addWall(kube.getTileAt(6, 4, 3));
+		
+//		//temporary:
+//		kube = new Kube(5, 0.3f);
+//
+//		camera = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), (float)display.getWidth() / (float)display.getHeight(), 
+//				0.1f, 1000.f));
+//		camera.setPosition(new Vector4f(1.5f, 1.5f, 1.5f, 1));
+//		camera.setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
+//		rotHandler = new RotationHandler(camera);
+//		for(int f=1;f<=6;f++)
+//		{
+//			for(int a=0;a<5;a++)
+//			{
+//				for(int b=0;b<5;b++)
+//				{
+//					if(a == 4 && b == 3)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.FIRE, kube, f, rotHandler);
+//					}
+//					else if(a == 4 && b == 2)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_HIGH, TerrainType.WATER, kube, f, rotHandler);
+//					}
+//					else if(a == 1 && b == 1)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.SPIKES, kube, f, rotHandler);
+//					}
+//					else if(a == 2)
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_LOW, TerrainType.ICE, kube, f, rotHandler);
+//					}
+//					else
+//					{
+//						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, null, kube, f, rotHandler);
+//					}
+//				}
+//			}
+//		}
+//		player = new Player(1, 0, 0, kube);
+//		kube.addWall(kube.getTileAt(1, 3, 0), kube.getTileAt(1, 4, 0));
+//		kube.addWall(kube.getTileAt(6, 4, 3));
 	}
-	
+
 	public void setGameOver(boolean over)
 	{
 		gameOver = over;
 	}
-	
+
 	public void render(Renderer render)
 	{
 		Matrix4f viewProj = camera.getViewProjection();
@@ -81,7 +100,7 @@ public class KubusGame
 		//rect x bounds [100, 700]
 		render.drawRectangle(100, 820, (int)((player.getHealth() / Player.MAX_HEALTH) * 700), 30, 0x0000FF);
 	}
-	
+
 	public void runGameLogic(float deltaTime)
 	{
 		if(rotHandler.isRunning())
@@ -121,7 +140,7 @@ public class KubusGame
 			else
 			{
 				kube.tileAffectPlayer(player, this);
-				
+
 
 				if(!player.isMovingToNextTile())
 				{
