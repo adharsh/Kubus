@@ -1,16 +1,17 @@
 package utils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import terrain.TerrainType;
+
 import entity.Kube;
 import entity.Tile;
 import graphics.Camera;
 import graphics.Matrix4f;
 import graphics.RotationHandler;
 import graphics.Vector4f;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class KubeFileReader 
 {
 	private final static String end = "</end>";
@@ -27,7 +28,15 @@ public class KubeFileReader
 		int[] b = new int[a.length];
 		for(int i = 0; i < a.length; i++)
 		{
-			b[i] = Integer.parseInt(a[i]);
+			try
+			{
+				b[i] = Integer.parseInt(a[i]);
+			}
+			catch(Exception e) 
+			{
+				b[i] = Integer.MIN_VALUE;
+			}
+			
 		}
 		
 		return b;
@@ -38,7 +47,6 @@ public class KubeFileReader
 		
 		int[] data;
 		String line = sline.trim();
-		String start = "";
 		int startIndex = 0;
 		
 		if(line.equals("")) return;
@@ -48,7 +56,7 @@ public class KubeFileReader
 			startIndex = psi.length();
 			line = line.substring(startIndex, line.indexOf(end)).trim();
 			data = retrieveData(line);
-			asset.setPlayerStartIndex(new Kube.TileIndex(data[0], data[1], data[2]) );
+			asset.setPlayerStartIndex(new Kube.TileIndex(data[0], data[1], Kube.TOP) );
 			return;
 		}
 		
@@ -63,6 +71,22 @@ public class KubeFileReader
 			float tileSize = Float.parseFloat(line.split(",")[1]);
 			asset.setTileSize(tileSize);
 			asset.setKube(new Kube(data[0], tileSize));
+			
+			float dist = (float)data[0] * tileSize;
+			
+			asset.getCamera().setPosition(new Vector4f(dist, dist, dist, 1));
+			for(int f=1;f<6;f++)
+			{
+				for(int a=0;a<tileSize;a++)
+				{
+					for(int b=0;b<tileSize;b++)
+					{
+						new Tile(a, b, Tile.TILEHEIGHT_NORMAL, TerrainType.ERROR_TYPE, 
+								asset.getKube(), f, asset.getRotationHandler());
+					}
+				}
+			}
+			
 			return;
 		}
 		
@@ -80,15 +104,17 @@ public class KubeFileReader
 
 		if(	line.indexOf(t) != -1)
 		{
-			asset.setCamera(new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), 1.0f, 
-					0.1f, 1000.f)));
-			asset.getCamera().setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
-			asset.setRotationHandler(new RotationHandler(asset.getCamera()));
 			
 			startIndex = t.length();
 			line = line.substring(startIndex, line.indexOf(end)).trim();
 			data = retrieveData(line);
-			asset.getKube().addTile(new Tile(data[0], data[1], data[2], Assets.terrains[data[3]], asset.getKube(), data[4], null));
+			Tile t = asset.getKube().getTileAt(data[4], data[0], data[1]);
+			if(t == null)
+			{
+				return;
+			}
+			t.setTerrain(Assets.terrains[data[3]]);
+			t.setHeight(data[2]);
 			
 			return;
 		}
@@ -121,7 +147,7 @@ public class KubeFileReader
 				);
 			else if(data.length == 3)
 				asset.getKube().addWall(
-						asset.getKube().getTileAt(data[0], data[1], data[2])
+						asset.getKube().getTileAt(data[2], data[0], data[1])
 						);
 			else
 				kube.addWall(
@@ -140,6 +166,12 @@ public class KubeFileReader
 		//create kube first in file
 		BufferedReader br;
 		Assets asset = new Assets();
+
+		asset.setCamera(new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), 1.0f, 
+				0.1f, 1000.f)));
+		asset.getCamera().setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
+		asset.setRotationHandler(new RotationHandler(asset.getCamera()));
+		
 		String line = "";
 
 		br = new BufferedReader( new FileReader(filepath));
@@ -155,7 +187,7 @@ public class KubeFileReader
 	public static void main(String[] args) 
 	{
 		try {
-			readFile("res/map1.lol");
+			readFile("res/maps/lol.mp");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
