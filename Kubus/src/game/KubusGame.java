@@ -37,7 +37,7 @@ public class KubusGame
 	public KubusGame(Display display)
 	{
 		Assets a = null;
-		try {	a = KubeFileReader.readFile("res/maps/lol.mp");	} catch (IOException e) {	}
+		a = KubeFileReader.readFile("res/maps/lol.mp");
 		
 		loadAssets(a);
 		
