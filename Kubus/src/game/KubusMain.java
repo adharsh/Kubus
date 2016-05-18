@@ -2,6 +2,8 @@ package game;
 
 import graphics.Display;
 import graphics.Renderer;
+import utils.Assets;
+import utils.KubeFileReader;
 
 
 public class KubusMain
@@ -27,6 +29,11 @@ public class KubusMain
 		display.setVisible(true);
 		float deltaTime = 0;
 		long lastTime = System.currentTimeMillis();
+		
+		Assets map1 = KubeFileReader.readFile("res/maps/lol.mp");
+		
+		game.loadAssets(map1);
+		
 		while(true)
 		{
 			deltaTime = (float)(System.currentTimeMillis() - lastTime) / 1000.f;
