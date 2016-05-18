@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import entity.Kube;
 import entity.Player;
-import entity.Tile;
 import graphics.Camera;
 import graphics.Display;
 import graphics.Matrix4f;
 import graphics.Renderer;
 import graphics.RotationHandler;
-import graphics.Vector4f;
 import input.KeyInput;
 import terrain.TerrainType;
 import utils.Assets;
