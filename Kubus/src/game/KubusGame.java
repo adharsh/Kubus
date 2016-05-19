@@ -35,7 +35,7 @@ public class KubusGame
 		player = new Player(Kube.TOP, a.getPlayerStartIndex().x, a.getPlayerStartIndex().y, kube);
 		rotHandler = a.getRotationHandler();
 	}
-
+	
 	public KubusGame(Display display)
 	{
 		Assets a = null;

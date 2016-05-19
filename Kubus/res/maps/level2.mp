@@ -1,4 +1,5 @@
 <KubeInitializer> 7,0.5 </end>
+<Tile> 6,2,3,0,1 </end>
 <Tile> 0,0,3,0,1 </end>
 <Tile> 0,1,3,0,1 </end>
 <Tile> 0,2,3,0,1 </end>
@@ -119,5 +120,59 @@
 <Wall> 5,4,2,4,4,2 </end>
 <Wall> 4,5,2,4,4,2 </end>
 <Wall> 2,5,2,2,4,2 </end>
+
+<Tile> 0,0,2,4,6 </end>
+<Tile> 0,1,2,4,6 </end>
+<Tile> 0,2,2,4,6 </end>
+<Tile> 0,3,2,4,6 </end>
+<Tile> 0,4,2,4,6 </end>
+<Tile> 0,5,2,4,6 </end>
+<Tile> 0,6,2,4,6 </end>
+
+<Tile> 6,0,2,4,6 </end>
+<Tile> 6,1,2,4,6 </end>
+<Tile> 6,2,2,4,6 </end>
+<Tile> 6,3,2,4,6 </end>
+<Tile> 6,4,2,4,6 </end>
+<Tile> 6,5,2,4,6 </end>
+<Tile> 6,6,2,4,6 </end>
+
+<Tile> 1,0,2,4,6 </end>
+<Tile> 2,0,2,4,6 </end>
+<Tile> 3,0,2,4,6 </end>
+<Tile> 4,0,2,4,6 </end>
+<Tile> 5,0,2,4,6 </end>
+<Tile> 6,0,2,4,6 </end>
+
+<Tile> 1,6,2,4,6 </end>
+<Tile> 2,6,2,4,6 </end>
+<Tile> 3,6,2,4,6 </end>
+<Tile> 4,6,2,4,6 </end>
+<Tile> 5,6,2,4,6 </end>
+<Tile> 6,6,2,4,6 </end>
+
+<Tile> 1,1,2,2,6 </end>
+<Tile> 1,3,2,2,6 </end>
+<Tile> 3,1,2,2,6 </end>
+<Tile> 1,5,2,2,6 </end>
+<Tile> 3,5,2,2,6 </end>
+<Tile> 5,1,2,2,6 </end>
+<Tile> 5,5,2,2,6 </end>
+<Tile> 5,3,2,2,6 </end>
+<Tile> 3,3,2,2,6 </end>
+
+<Tile> 0,3,2,1,3 </end>
+<Tile> 1,2,2,1,3 </end>
+<Tile> 1,3,2,1,3 </end>
+<Tile> 1,4,2,1,3 </end>
+<Tile> 2,3,2,1,3 </end>
+<Tile> 3,2,2,4,3 </end>
+<Tile> 3,3,2,4,3 </end>
+<Tile> 3,4,2,4,3 </end>
+<Tile> 4,1,2,4,3 </end>
+<Tile> 4,5,2,4,3 </end>
+<Tile> 5,2,2,3,3 </end>
+<Tile> 5,4,2,3,3 </end>
+
 <PlayerStartIndex> 3,3 </end>
 <Goal> 3,3,2 </end>
