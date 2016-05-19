@@ -21,7 +21,7 @@ Corners:
 <Wall> 0,0,-1,0,1 </end>
 <Wall> 0,3,-1,3,1 </end>	
 <Wall> 0,3,0,4,1  </end>
-<Wall> 0,0,0,-1,1  </end>
+<Wall> 0,0,0,-1,1  </end> 
 <Wall> 3,3,4,3,1 </end>
 
 Others:
