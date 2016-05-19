@@ -9,6 +9,10 @@ import javax.swing.JPanel;
 
 class BufferedPanel extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BufferedImage frameBuffer;
 	private Graphics bufferGraphics;
 	public static Lock frameBufferLock;
