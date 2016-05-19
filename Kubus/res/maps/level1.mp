@@ -2,7 +2,7 @@
 
 <KubeInitializer> 4, 1.02 </end> 	
 <PlayerStartIndex> 3,3 </end>
-<Goal> 1,1,4 </end>		
+<Goal> 1,1,4 </end>	       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Top Face:
 Edges:
@@ -23,7 +23,6 @@ Corners:
 <Wall> 0,3,0,4,1  </end>
 <Wall> 0,0,0,-1,1  </end>
 <Wall> 3,3,4,3,1 </end>
-
 
 Others:
 <Wall> 1,2,1,1,3,1 </end>			
