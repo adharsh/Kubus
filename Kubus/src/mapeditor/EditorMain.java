@@ -81,7 +81,7 @@ public class EditorMain implements KeyListener, MouseListener
 	
 	public static Lock mainLock = new ReentrantLock();
 	
-	public static void main(String[] args)
+	public static void editorMain()
 	{
 		Window window = new Window(900, 900);
 		EditorMain listener = new EditorMain();
