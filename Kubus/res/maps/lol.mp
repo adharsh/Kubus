@@ -1,3 +1,19 @@
+// Example mp file
+/*
+TOP = 1;
+FRONT = 2;
+BOTTOM = 3;
+BACK = 4;
+LEFT = 5;
+RIGHT = 6;
+
+Water = 1
+Spikes = 2
+Fire = 3
+Ice = 4
+
+*/
+
 <KubeInitializer> 7, 1.02 </end> 		//cubeface int, tileSize float
 <PlayerStartIndex> 3,3 </end>
 <Goal> 2,2,1 </end>						//x, y -> all ints

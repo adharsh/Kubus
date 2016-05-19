@@ -29,8 +29,8 @@ public class KubusMain
 		display.setVisible(true);
 		float deltaTime = 0;
 		long lastTime = System.currentTimeMillis();
-		
-		Assets map1 = KubeFileReader.readFile("res/maps/super.mp");
+
+		Assets map1 = KubeFileReader.readFile("res/maps/level1.mp");
 		
 		game.loadAssets(map1);
 		
