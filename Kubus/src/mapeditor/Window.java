@@ -1,8 +1,10 @@
 package mapeditor;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,6 +27,7 @@ class BufferedPanel extends JPanel
 		this.setPreferredSize(new Dimension(w, h));
 		frameBuffer = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
 		bufferGraphics = frameBuffer.getGraphics();
+		bufferGraphics.setFont(new Font("defualt", Font.BOLD, 13));
 	}
 	
 	public Graphics getBufferGraphics()
@@ -77,4 +80,8 @@ public class Window
 		window.addKeyListener(k);
 	}
 	
+	public void addMouseListener(MouseListener m)
+	{
+		window.addMouseListener(m);
+	}
 }

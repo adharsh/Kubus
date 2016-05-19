@@ -7,6 +7,7 @@ import graphics.Display;
 import graphics.Matrix4f;
 import graphics.Renderer;
 import graphics.RotationHandler;
+import graphics.Vector4f;
 import input.KeyInput;
 import terrain.TerrainType;
 import utils.Assets;
@@ -26,6 +27,9 @@ public class KubusGame
 	{
 		currentAsset = a;
 		gameOver = false;
+		a.regenerateVisualComponents();
+		float dist = a.getTileSize() * a.getCubeFace();
+		a.getCamera().setPosition(new Vector4f(dist, dist, dist, 1));
 		kube = a.getKube();
 		camera = a.getCamera();
 		player = new Player(Kube.TOP, a.getPlayerStartIndex().x, a.getPlayerStartIndex().y, kube);

@@ -1,9 +1,11 @@
 package utils;
 
-import terrain.TerrainType;
 import entity.Kube;
 import graphics.Camera;
+import graphics.Matrix4f;
 import graphics.RotationHandler;
+import graphics.Vector4f;
+import terrain.TerrainType;
 
 public class Assets 
 {
@@ -27,10 +29,13 @@ public class Assets
 	{
 		return camera;
 	}
-
-	public void setCamera(Camera camera) 
+	
+	public void regenerateVisualComponents()
 	{
-		this.camera = camera;
+		camera = new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), 1.0f, 
+				0.1f, 1000.f));
+		camera.setRotation(new Vector4f(-2, -2, -2), new Vector4f(-2, 2, -2), 0);
+		rotationHandler = new RotationHandler(camera);
 	}
 
 	public TerrainType[] getTerrains() {
@@ -80,11 +85,6 @@ public class Assets
 	public RotationHandler getRotationHandler() 
 	{
 		return rotationHandler;
-	}
-
-	public void setRotationHandler(RotationHandler rotationHandler) 
-	{
-		this.rotationHandler = rotationHandler;
 	}
 	
 	

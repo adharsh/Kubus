@@ -4,15 +4,27 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class EditorMain implements KeyListener
+public class EditorMain implements KeyListener, MouseListener
 {
 	private static int curFace;
 	private static ArrayList<EditorAsset> assetList;
 	private static EditorMap map = new EditorMap(7, 0.5f);
+	private static int mode = 1;
+	
+	private static Scanner scan = new Scanner(System.in);
+	
+	public static int MODE_VIEW = 1;
+	public static int MODE_TILEEDIT = 2;
+	public static int MODE_ADDWALL = 3;
+	public static int MODE_PLACEPLAYER = 4;
+	public static int MODE_PLACEGOAL = 5;
 	
 	public static void nextFace()
 	{
@@ -29,18 +41,54 @@ public class EditorMain implements KeyListener
 		assetList = map.fetchAssetsOnFace(curFace);
 	}
 	
+	public static String getFaceName(int face)
+	{
+		switch(face)
+		{
+		case 1:
+			return "TOP";
+		case 2:
+			return "FRONT";
+		case 3:
+			return "BOTTOM";
+		case 4:
+			return "BACK";
+		case 5:
+			return "LEFT";
+		case 6:
+			return "RIGHT";
+		}
+		return "BAD FACE";
+	}
+	
+	public static String getModeName()
+	{
+		switch(mode)
+		{
+		case 1:
+			return "VIEW";
+		case 2:
+			return "TILE EDIT";
+		case 3:
+			return "ADD WALL";
+		case 4:
+			return "PLACE PLAYER";
+		case 5:
+			return "PLACE GOAL";
+		}
+		return "BAD MODE";
+	}
+	
 	public static Lock mainLock = new ReentrantLock();
 	
 	public static void main(String[] args)
 	{
 		Window window = new Window(900, 900);
-		window.addKeyListener(new EditorMain());
+		EditorMain listener = new EditorMain();
+		window.addKeyListener(listener);
+		window.addMouseListener(listener);
 		window.setVisible(true);
 		curFace = 1;
-		map.addAsset(new EditorWall(0, 0, 1, 0, 1, 1));
-		map.addAsset(new EditorWall(6, 1, 1));
-		map.addAsset(new EditorWall(0, 0, -1, 0, 1));
-		map.addAsset(new EditorWall(0, 1, 2));
 		reloadAssets();
 		Graphics g = window.getBufferGraphics();
 		while(true)
@@ -54,10 +102,10 @@ public class EditorMain implements KeyListener
 				asset.renderAsset(g, map.getSize());
 			}
 			g.setColor(Color.orange);
-			g.drawString("Current face: " + curFace + " (press enter to go to next face)", 600, 60);
-			g.drawString("Press ` to use console commands", 0, 30);
+			g.drawString("Current face: " + getFaceName(curFace) + " (press enter to go to next face)", 600, 60);
+			g.drawString("Press 1 switch mode (check console)", 0, 30);
+			g.drawString("Current mode: " + getModeName(), 0, 60);
 			BufferedPanel.frameBufferLock.unlock();
-			
 			window.repaint();
 			mainLock.unlock();
 			try
@@ -74,14 +122,104 @@ public class EditorMain implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent arg0) 
 	{
-		if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
+		mainLock.lock();
+		if(arg0.getKeyCode() == KeyEvent.VK_1)
 		{
-			mainLock.lock();
-			nextFace();
-			mainLock.unlock();
+			System.out.println("Enter mode change (1 = view, 2 = tile edit, 3 = add wall, 4 = place player, 5 = place goal)");
+			int newMode = scan.nextInt();
+			
+			if(newMode == 4 && curFace != 1)
+			{
+				System.out.println("Player can only be placed on the top face");
+
+				mainLock.unlock();
+				return;
+			}
+			
+			if(newMode >= 1 && newMode <= 5)
+			{
+				mode = newMode;
+			}
+			else
+			{
+				System.out.println("bad mode entered");
+			}
 		}
+		if(mode == EditorMain.MODE_VIEW)
+		{
+			if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
+			{
+				nextFace();
+			}
+		}
+		mainLock.unlock();
 	}
 
+	private EditorTile createNewTile(int x, int y)
+	{
+		EditorTile ret = null;
+		
+		System.out.print("Enter height (1 = low, 2 = normal, 3 = high): ");
+		int ht = scan.nextInt();
+		System.out.print("Enter terrain (0 = grass, 1 = water, 2 = spikes, 3 = fire, 4 = ice): ");
+		int tr = scan.nextInt();
+		ret = new EditorTile(curFace, x, y, ht, tr);
+		return ret;
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) 
+	{
+		mainLock.lock();
+		int x = arg0.getX();
+		int y = arg0.getY();
+		if(x < 100 || x > 799 || y < 100 || y > 799)
+		{
+			return;
+		}
+		x -= 100;
+		y -= 100;
+		int tx = x / (700 / map.getSize()), ty = y / (700 / map.getSize());
+		if(mode == MODE_TILEEDIT)
+		{
+			System.out.println("Selected tile: " + tx + ", " + ty);
+			EditorTile newTile = createNewTile(tx, ty);
+			if(newTile != null)
+			{
+				map.addAsset(newTile);
+				reloadAssets();
+			}
+		}
+		if(mode == MODE_PLACEGOAL)
+		{
+			System.out.println("Selected tile: " + tx + ", " + ty);
+			EditorGoal newGoal = new EditorGoal(tx, ty, curFace);
+			map.addAsset(newGoal);
+			reloadAssets();
+		}
+		if(mode == MODE_PLACEPLAYER)
+		{
+			System.out.println("Selected tile: " + tx + ", " + ty);
+			EditorPlayerStart player = new EditorPlayerStart(tx, ty);
+			map.addAsset(player);
+			reloadAssets();
+		}
+		if(mode == MODE_ADDWALL)
+		{
+			
+		}
+		mainLock.unlock();
+		
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent arg0)
+	{
+		
+	}
+	
+	//~~~~~~~~
+	
 	@Override
 	public void keyReleased(KeyEvent arg0)
 	{
@@ -93,4 +231,24 @@ public class EditorMain implements KeyListener
 	{
 		
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

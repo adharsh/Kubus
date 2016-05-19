@@ -20,6 +20,10 @@ public class MapWriter
 		
 			for(EditorAsset asset : assets)
 			{
+				if(asset == null)
+				{
+					continue;
+				}
 				if(!asset.getAssetString().equals(""))
 				{
 					fw.write(asset.getAssetString() + "\n");

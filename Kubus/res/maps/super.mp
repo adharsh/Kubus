@@ -1,0 +1,9 @@
+<KubeInitializer> 7,0.5 </end>
+<Tile> 1,1,1,2,1 </end>
+<Tile> 2,1,2,1,1 </end>
+<Tile> 3,1,3,4,1 </end>
+<Tile> 4,1,2,3,1 </end>
+<Wall> 0,0,1,1,0,1 </end>
+<Wall> 0,1,2 </end>
+<Wall> 0,0,-1,0,1 </end>
+<PlayerStartIndex> 0,0 </end>

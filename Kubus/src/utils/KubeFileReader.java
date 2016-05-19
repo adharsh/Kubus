@@ -3,13 +3,9 @@ package utils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import terrain.TerrainType;
 import entity.Kube;
 import entity.Tile;
-import graphics.Camera;
-import graphics.Matrix4f;
-import graphics.RotationHandler;
-import graphics.Vector4f;
+import terrain.TerrainType;
 public class KubeFileReader 
 {
 	private final static String end = "</end>";
@@ -70,9 +66,9 @@ public class KubeFileReader
 			asset.setTileSize(tileSize);
 			asset.setKube(new Kube(data[0], tileSize));
 
-			float dist = (float)data[0] * tileSize;
+//			float dist = (float)data[0] * tileSize;
 
-			asset.getCamera().setPosition(new Vector4f(dist, dist, dist, 1));
+//			asset.getCamera().setPosition(new Vector4f(dist, dist, dist, 1));
 			for(int f=1;f<=6;f++)
 			{
 				for(int a=0;a<data[0];a++)
@@ -102,8 +98,8 @@ public class KubeFileReader
 			{
 				return;
 			}
-			tile.setTerrain(Assets.terrains[data[3]]);
 			tile.setHeight(data[2]);
+			tile.setTerrain(Assets.terrains[data[3]]);
 
 			return;
 		}
@@ -160,12 +156,7 @@ public class KubeFileReader
 		//create kube first in file
 		BufferedReader br;
 		Assets asset = new Assets();
-
-		asset.setCamera(new Camera(new Matrix4f().initPerspective((float)Math.toRadians(70.f), 1.0f, 
-				0.1f, 1000.f)));
-		asset.getCamera().setRotation(new Vector4f(-2, -2, -2, 0), new Vector4f(-2, 2, -2, 0), 0);
-		asset.setRotationHandler(new RotationHandler(asset.getCamera()));
-
+		asset.regenerateVisualComponents();
 		String line = "";
 
 		try 

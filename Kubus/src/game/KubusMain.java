@@ -30,7 +30,7 @@ public class KubusMain
 		float deltaTime = 0;
 		long lastTime = System.currentTimeMillis();
 		
-		Assets map1 = KubeFileReader.readFile("res/maps/lol.mp");
+		Assets map1 = KubeFileReader.readFile("res/maps/super.mp");
 		
 		game.loadAssets(map1);
 		

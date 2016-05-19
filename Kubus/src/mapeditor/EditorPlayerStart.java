@@ -29,9 +29,9 @@ public class EditorPlayerStart extends EditorAsset
 	@Override
 	public void renderAsset(Graphics g, int tileCount) 
 	{
-		int tileSize = 650 / tileCount;
-		int xLoc = 105 + (x * tileSize);
-		int yLoc = 105 + (y * tileSize);
+		int tileSize = 700 / tileCount;
+		int xLoc = 100 + (x * tileSize);
+		int yLoc = 100 + (y * tileSize);
 		
 		g.drawImage(playerImage, xLoc, yLoc, tileSize, tileSize, null);
 	}

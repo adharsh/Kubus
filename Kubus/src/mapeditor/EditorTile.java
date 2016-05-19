@@ -1,5 +1,6 @@
 package mapeditor;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -17,7 +18,7 @@ public class EditorTile extends EditorAsset
 		waterImage = loadimg("res/water.jpg");
 		fireImage = loadimg("res/fire.jpg");
 		iceImage = loadimg("res/ice.jpg");
-		spikeImage = loadimg("res/spike.jpg");
+		spikeImage = loadimg("res/spike.png");
 	}
 	
 	public static final int TT_ERROR = 0;
@@ -41,6 +42,15 @@ public class EditorTile extends EditorAsset
 		height = 2;
 		terrain = TT_ERROR;
 	}
+	
+	public EditorTile(int f, int x, int y, int height, int terrain)
+	{
+		this.x = x;
+		this.y = y;
+		this.face = f;
+		this.height = height;
+		this.terrain = terrain;
+	}
 
 	@Override
 	public String getAssetString()
@@ -50,6 +60,20 @@ public class EditorTile extends EditorAsset
 			return "";
 		}
 		return "<Tile> " + x + "," + y + "," + height + "," + terrain + "," + face + " </end>";
+	}
+	
+	private String getNameFromHeight(int height)
+	{
+		switch(height)
+		{
+		case 1:
+			return "LOW";
+		case 2:
+			return "NORMAL";
+		case 3:
+			return "HIGH";
+		}
+		return "BAD HEIGHT";
 	}
 
 	@Override
@@ -79,6 +103,8 @@ public class EditorTile extends EditorAsset
 			g.drawImage(iceImage, xLoc, yLoc, tileSize, tileSize, null);
 			break;
 		}
+		g.setColor(Color.magenta);
+		g.drawString(x + ", " + y + ":" + getNameFromHeight(height), xLoc, yLoc + (tileSize / 2));
 	}
 	
 	@Override

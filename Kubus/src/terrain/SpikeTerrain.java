@@ -48,8 +48,6 @@ public class SpikeTerrain extends Terrain
 	@Override
 	public void render(Renderer render, Matrix4f viewProjection) 
 	{
-		//TODO
-		//if slow, change me!!
 		super.render(render, viewProjection);
 		Transformation tf = new Transformation(renderTransform);
 		tf.setScale(map.getTileLength() / 4, map.getTileLength(), map.getTileLength() / 4);
