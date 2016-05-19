@@ -365,8 +365,7 @@ public class Player extends Entity
 		{
 			moveTime = 0.25f;
 		}
-			currentHeightOffset = thisTile.getTerrain().getWaterOffset(-1);
-	//	}
+		currentHeightOffset = thisTile.getTerrain().getWaterOffset(-1).add(thisTile.getHeightOffset());
 		thisTile.getTerrain().onPlayerLeaveTile(this);
 	}
 	
@@ -428,8 +427,6 @@ public class Player extends Entity
 	
 	public void switchFace(int edge, int direction, RotationHandler r)
 	{
-		//TODO: optional to change me
-//		lastMoveDirection = -1;
 		Tile t = map.getNearestTile(currentFace, curX, curY);
 		currentFace = t.getFace();
 		t.getTerrain().onPlayerLeaveTile(this);

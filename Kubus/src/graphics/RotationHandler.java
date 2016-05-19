@@ -10,7 +10,6 @@ public class RotationHandler
 	public static final int LEFT_EDGE = 1;
 	public static final int MOVE_UP = 2;
 	public static final int MOVE_DOWN = 3;
-//	public static final float dtheta = 0.0111f; 
 	
 	private Camera camera;
 	private boolean isRunning = false;	

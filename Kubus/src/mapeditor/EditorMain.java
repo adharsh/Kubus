@@ -221,7 +221,6 @@ public class EditorMain implements KeyListener, MouseListener
 							selectedx == -1 || selectedy == -1 || selectedx == map.getSize() ||
 							selectedy == map.getSize())
 					{
-						System.out.println("rather here");
 						map.addAsset(new EditorWall(selectedx, selectedy, tx, ty, curFace));
 						reloadAssets();
 					}

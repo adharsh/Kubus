@@ -112,13 +112,16 @@ public class KubusGame
 		{
 		case 1:
 			{
-				//change map here
-//
-
-				System.out.println("you win the entire game");
-				System.exit(1);
+				Assets level2 = KubeFileReader.readFile("res/maps/level2.mp");
+				loadAssets(level2);
 			}
 			break;	
+		case 2:
+			{
+				Assets level3 = KubeFileReader.readFile("res/maps/level3.mp");
+				loadAssets(level3);
+			}
+			break;
 		default:
 			System.out.println("you win the entire game");
 			System.exit(1);
