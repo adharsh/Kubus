@@ -39,7 +39,7 @@ public class MapWriter
 	
 	public static void saveFileDialog(EditorMap map)
 	{
-		JFileChooser saveDialog = new JFileChooser();
+		JFileChooser saveDialog = new JFileChooser("res");
 		saveDialog.showSaveDialog(null);
 		if(saveDialog.getSelectedFile() != null)
 		{

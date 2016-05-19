@@ -131,7 +131,6 @@ public class KubusGame
 		{
 			nextMap();
 		}
-		
 		if(rotHandler.isRunning())
 		{
 			rotHandler.rotate(deltaTime);

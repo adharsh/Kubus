@@ -151,6 +151,10 @@ public class EditorMain implements KeyListener, MouseListener
 			{
 				nextFace();
 			}
+			if(arg0.getKeyCode() == KeyEvent.VK_S)
+			{
+				MapWriter.saveFileDialog(map);
+			}
 		}
 		mainLock.unlock();
 	}
@@ -173,8 +177,70 @@ public class EditorMain implements KeyListener, MouseListener
 		mainLock.lock();
 		int x = arg0.getX();
 		int y = arg0.getY();
+		if(mode == MODE_ADDWALL)
+		{
+
+			x -= 100;
+			y -= 100;
+			
+			int tx = x / (700 / map.getSize()), ty = y / (700 / map.getSize());
+			if(x < 0)
+			{
+				tx = -1;
+			}
+			if(y < 0)
+			{
+				ty = -1;
+			}
+			if(x > 700)
+			{
+				tx = map.getSize();
+			}
+			if(y > 700)
+			{
+				ty = map.getSize();
+			}
+			System.out.println("Selected tile: " + tx + ", " + ty);
+			if(selectedx == -5)
+			{
+				selectedx = tx;
+				selectedy = ty;
+			}
+			else
+			{
+				if(tx == selectedx && ty == selectedy && 
+				(tx == 0 || ty == 0 || tx == map.getSize() - 1 || ty == map.getSize() - 1))
+				{
+					map.addAsset(new EditorWall(tx, ty, curFace));
+					reloadAssets();
+				}
+				if((Math.abs(tx - selectedx) == 1 && (ty - selectedy) == 0) ||
+						Math.abs(ty - selectedy) == 1 && (tx - selectedx) == 0)
+				{
+					if(tx == -1 || ty == -1 || tx == map.getSize() || ty == map.getSize() ||
+							selectedx == -1 || selectedy == -1 || selectedx == map.getSize() ||
+							selectedy == map.getSize())
+					{
+						System.out.println("rather here");
+						map.addAsset(new EditorWall(selectedx, selectedy, tx, ty, curFace));
+						reloadAssets();
+					}
+					else
+					{
+						map.addAsset(new EditorWall(selectedx, selectedy, tx, ty, curFace, curFace));
+						reloadAssets();
+					}
+				}
+				selectedx = -5;
+				selectedy = -5;
+			}
+			mainLock.unlock();
+			return;
+		}
+		
 		if(x < 100 || x > 799 || y < 100 || y > 799)
 		{
+			mainLock.unlock();
 			return;
 		}
 		x -= 100;
@@ -204,13 +270,13 @@ public class EditorMain implements KeyListener, MouseListener
 			map.addAsset(player);
 			reloadAssets();
 		}
-		if(mode == MODE_ADDWALL)
-		{
-			
-		}
+		
 		mainLock.unlock();
 		
 	}
+	
+	private static int selectedx = -5;
+	private static int selectedy = -5;
 	
 	@Override
 	public void mousePressed(MouseEvent arg0)

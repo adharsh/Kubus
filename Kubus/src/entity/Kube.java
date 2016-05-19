@@ -81,6 +81,11 @@ public class Kube
 		edgeWalls = new ArrayList<Tile>();
 		cornerWalls = new ArrayList<TileIndex[]>();
 	}
+	
+	public ArrayList<ArrayList<Tile>> getTiles()
+	{
+		return tiles;
+	}
 
 	public void addWall(Tile t1, Tile t2)
 	{

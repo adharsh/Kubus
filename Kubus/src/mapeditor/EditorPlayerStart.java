@@ -33,7 +33,7 @@ public class EditorPlayerStart extends EditorAsset
 		int xLoc = 100 + (x * tileSize);
 		int yLoc = 100 + (y * tileSize);
 		
-		g.drawImage(playerImage, xLoc, yLoc, tileSize, tileSize, null);
+		g.drawImage(playerImage, xLoc + 3, yLoc + 3, tileSize - 6, tileSize - 6, null);
 	}
 	@Override
 	public int getFace()

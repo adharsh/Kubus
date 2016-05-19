@@ -178,6 +178,11 @@ public class Tile extends Entity
 		}
 	}
 	
+	public void setRotHandler(RotationHandler r)
+	{
+		this.rotHandler = r;
+	}
+	
 	@Override
 	public void render(Renderer r, Matrix4f viewProjection)
 	{

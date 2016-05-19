@@ -67,7 +67,7 @@ public class EditorWall extends EditorAsset
 		{
 			return false;
 		}
-		switch(face)
+		switch(type)
 		{
 		case WALL_INNER:
 			return (other.facef1 == facef1 && other.facef2 == facef2 && other.tilexf1 == tilexf1 && 

@@ -1,6 +1,9 @@
 package utils;
 
+import java.util.ArrayList;
+
 import entity.Kube;
+import entity.Tile;
 import graphics.Camera;
 import graphics.Matrix4f;
 import graphics.RotationHandler;
@@ -36,6 +39,18 @@ public class Assets
 				0.1f, 1000.f));
 		camera.setRotation(new Vector4f(-2, -2, -2), new Vector4f(-2, 2, -2), 0);
 		rotationHandler = new RotationHandler(camera);
+		if(kube == null)
+		{
+			return;
+		}
+		for(ArrayList<Tile> f : kube.getTiles())
+		{
+			for(Tile t : f)
+			{
+				t.setRotHandler(rotationHandler);
+				t.setTerrain(t.getTerrain().getTerrainType());
+			}
+		}
 	}
 
 	public TerrainType[] getTerrains() {
